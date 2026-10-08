@@ -86,7 +86,6 @@ A comprehensive, state-of-the-art Web-based Healthcare Management Platform featu
 
 | Role | Username / Email | Password | Access Portal |
 | :--- | :--- | :--- | :--- |
-| **Admin** | `Sunny` | `Sunny123` | Admin Portal |
 | **Doctor (Demo)** | `dr.rajesh@aurahealth.com` | `doctor123` | Patient & Doctor Portal |
 | **Patient (Demo)** | `rahul.sharma@example.com` | `patient123` | Patient & Doctor Portal |
 
