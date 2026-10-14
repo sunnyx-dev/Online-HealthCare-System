@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HealthCare+ Premium Skeuomorphic Hospital Administration Console - Central healthcare infrastructure, doctor roster, and master appointment control.">
+  <title>HealthCare+ | Hospital Admin Console</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="dashboard-container">
+
+    <!-- ======================================================================
+         Skeuomorphic Sidebar Admin Chassis
+         ====================================================================== -->
+    <aside class="sidebar">
+      <!-- HealthCare+ Brand Emblem -->
+      <a href="javascript:void(0)" onclick="switchView('overview')" class="brand-badge" title="Hospital Admin Console Home">
+        <div class="brand-logo-frame">
+          <img src="images/healthcare_plus_logo.jpg" alt="HealthCare+ 3D Emblem" width="48" height="48">
+        </div>
+        <div class="brand-info">
+          <h1>HealthCare<span>+</span></h1>
+          <p>Admin Command</p>
+        </div>
+      </a>
+
+      <!-- Navigation Tactile Switch Menu -->
+      <nav>
+        <ul class="nav-menu">
+          <li>
+            <a href="javascript:void(0)" class="nav-link active" id="nav-overview" onclick="switchView('overview')">
+              <span class="nav-icon">📊</span>
+              <span>Overview</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="nav-link" id="nav-doctors" onclick="switchView('doctors')">
+              <span class="nav-icon">👨‍⚕️</span>
+              <span>Doctor Roster</span>
+              <span class="nav-badge" id="sidebarDocBadge">4 Active</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="nav-link" id="nav-users" onclick="switchView('users')">
+              <span class="nav-icon">👥</span>
+              <span>User Accounts</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="nav-link" id="nav-appointments" onclick="switchView('appointments')">
+              <span class="nav-icon">📅</span>
+              <span>Master Bookings</span>
+              <span class="nav-badge" id="sidebarApptBadge">28 Live</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="nav-link" id="nav-settings" onclick="switchView('settings')">
+              <span class="nav-icon">⚙️</span>
+              <span>Clinic Settings</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="nav-link" id="nav-analytics" onclick="switchView('analytics')">
+              <span class="nav-icon">📈</span>
+              <span>Hospital Analytics</span>
+            </a>
+          </li>
+          <li style="margin-top: auto; padding-top: 16px;">
+            <a href="../index.html" class="nav-link" onclick="handleLogout()" style="color: var(--ruby-danger);">
+              <span class="nav-icon">🚪</span>
+              <span>Log Out</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- ======================================================================
+         Main Console Workstation
+         ====================================================================== -->
+    <main class="main-wrapper">
+
+      <!-- Topbar Console Navigation Bay -->
+      <header class="topbar">
+        <!-- Debossed Inset Search Bay -->
+        <div class="search-bay">
+          <span class="search-icon">🔍</span>
+          <input 
+            type="search" 
+            class="search-input" 
+            id="adminSearchInput"
+            placeholder="Search doctors, staff, patients, appointment IDs..." 
+            aria-label="Search administrative records"
+            oninput="handleAdminSearch(this.value)"
+          >
+        </div>
+
+        <!-- Right Topbar Controls -->
+        <div class="topbar-actions">
+          <!-- Notification Bell with Anchored Popover -->
+          <div class="notif-wrapper">
+            <button type="button" class="btn-icon-tactile" id="btnAdminNotif" onclick="toggleAdminNotif(event)" title="System Alerts" aria-label="Notifications">
+              <span>🔔</span>
+              <span class="led-badge" id="notif-led" title="Unread alerts"></span>
+            </button>
+
+            <!-- Popup Dropdown Container (anchored directly below bell) -->
+            <div class="notification-popover" id="adminNotifPopover">
+              <div class="notification-header">
+                <h4>Admin System Alerts</h4>
+                <button type="button" class="btn-tactile-secondary" style="font-size: 11px; padding: 3px 8px;" onclick="clearAdminNotifs()">Clear All</button>
+              </div>
+              <div class="notification-item">
+                <b>👨‍⚕️ Dr. Rohan Iyer Registered</b>
+                <span>Credentials generated & assigned to Orthopedics chamber.</span>
+              </div>
+              <div class="notification-item">
+                <b>💾 Automated Cloud Backup Verified</b>
+                <span>Patient health vault snapshot completed (AES-256 encrypted).</span>
+              </div>
+              <div class="notification-item">
+                <b>🏥 OPD Peak Volume Notified</b>
+                <span>28 appointments active across all medical departments today.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Admin Profile Console Pill (Click to Edit Profile & Photo) -->
+          <button type="button" class="patient-profile-pill" onclick="openAdminProfileModal()" title="Click to Edit Profile & Photo">
+            <div class="patient-avatar-frame" id="topbarAvatarFrame">
+              <span id="topbarAvatarText">AD</span>
+            </div>
+            <div class="patient-meta-header">
+              <b class="adm-name-slot">Sunny Kumar</b>
+              <span>Super Admin • #ADM-Sunny123</span>
+            </div>
+            <span style="font-size: 11px; color: var(--teal-accent); margin-left: 4px;">✏️ Edit</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Scrollable Body (Houses All Views) -->
+      <div class="content-body">
+
+        <!-- ==================================================================
+             VIEW 1: HOSPITAL OVERVIEW
+             ================================================================== -->
+        <div class="dashboard-view active" id="view-overview">
+
+          <!-- Welcome Banner with 3D Hospital Command Center Illustration -->
+          <section class="welcome-banner">
+            <div class="welcome-text">
+              <div class="banner-badge">
+                <span>●</span> Hospital Operations: 100% Operational (Port 8081)
+              </div>
+              <h2>Hospital Command Center, <br><span class="adm-name-slot">Sunny Kumar</span></h2>
+              <p>All clinical departments and doctor chambers are synchronized. You have <b id="welcomeDocCount">4 specialist doctors</b> on active duty and <b>28 patient consultations</b> scheduled today.</p>
+              <div class="banner-action-row">
+                <button type="button" class="btn-tactile-primary" onclick="switchView('doctors')">
+                  <span>➕</span> Register New Doctor
+                </button>
+                <button type="button" class="btn-tactile-secondary" onclick="switchView('settings')">
+                  <span>⚙️</span> Clinic Configuration
+                </button>
+              </div>
+            </div>
+            <div class="banner-illustration-frame">
+              <img src="images/admin_banner_3d.jpg" alt="3D Hospital Command Operations Center" width="480" height="220">
+            </div>
+          </section>
+
+          <!-- Four Dimensional Statistic Cards -->
+          <section class="stat-cards-grid" aria-label="Hospital Statistics" style="margin-top: 28px;">
+            <!-- Card 1: Active Doctors -->
+            <article class="stat-card-dim" style="cursor: pointer;" onclick="switchView('doctors')" title="Click to view doctor roster">
+              <div class="stat-header">
+                <div class="stat-icon-vault">👨‍⚕️</div>
+                <span class="stat-trend-chip success">On Duty</span>
+              </div>
+              <h3>Active Specialists</h3>
+              <div class="stat-value" id="statDoctorCount">04</div>
+              <div class="stat-footer-text">Cardiology, Physician, Derma, Ortho</div>
+            </article>
+
+            <!-- Card 2: Total Registered Users -->
+            <article class="stat-card-dim" style="cursor: pointer;" onclick="switchView('users')" title="Click to view user accounts">
+              <div class="stat-header">
+                <div class="stat-icon-vault">👥</div>
+                <span class="stat-trend-chip info">Active Files</span>
+              </div>
+              <h3>Registered Users</h3>
+              <div class="stat-value" id="statUserCount">1,248</div>
+              <div class="stat-footer-text">Patients, Doctors & Clinical Staff</div>
+            </article>
+
+            <!-- Card 3: Today's Master Appointments -->
+            <article class="stat-card-dim" style="cursor: pointer;" onclick="switchView('appointments')" title="Click to view bookings">
+              <div class="stat-header">
+                <div class="stat-icon-vault">📅</div>
+                <span class="stat-trend-chip info">Live Today</span>
+              </div>
+              <h3>Total Bookings Today</h3>
+              <div class="stat-value" id="statApptCount">28</div>
+              <div class="stat-footer-text">8 Completed • 20 Scheduled</div>
+            </article>
+
+            <!-- Card 4: System Uptime -->
+            <article class="stat-card-dim" style="cursor: pointer;" onclick="switchView('settings')" title="Click to view system health">
+              <div class="stat-header">
+                <div class="stat-icon-vault">⚡</div>
+                <span class="stat-trend-chip success">99.98%</span>
+              </div>
+              <h3>Infrastructure Uptime</h3>
+              <div class="stat-value">99.9%</div>
+              <div class="stat-footer-text">Core Java & Servlets Engine Active</div>
+            </article>
+          </section>
+
+          <!-- Quick Action Tactile Bar -->
+          <section class="quick-actions-bar" style="margin-top: 28px;">
+            <div class="quick-actions-title">
+              <h3>Administrative Master Triggers</h3>
+              <p>One-touch physical triggers for hospital operations, provider onboarding, and system rules</p>
+            </div>
+            <div class="quick-buttons-group">
+              <button type="button" class="btn-action-teal" onclick="switchView('doctors')">
+                <span>➕</span> Add Doctor
+              </button>
+              <button type="button" class="btn-tactile-secondary" onclick="switchView('appointments')">
+                <span>📅</span> Master Appointments
+              </button>
+              <button type="button" class="btn-tactile-secondary" onclick="switchView('settings')">
+                <span>⚙️</span> Clinic Rules
+              </button>
+            </div>
+          </section>
+
+          <!-- Two-Column Primary Control Grid -->
+          <div class="dashboard-grid-layout" style="margin-top: 28px;">
+
+            <!-- Left Column: Active Specialists Roster & Audit Stream -->
+            <div style="display: flex; flex-direction: column; gap: 28px;">
+
+              <!-- Doctor Roster Preview Card -->
+              <section class="console-panel">
+                <div class="panel-header-row">
+                  <div class="panel-title-group">
+                    <h3>Specialist Doctor Roster</h3>
+                    <p>Verified healthcare providers currently on clinical duty</p>
+                  </div>
+                  <button type="button" class="btn-tactile-secondary" style="padding: 7px 14px; font-size: 12px;" onclick="switchView('doctors')">Manage All</button>
+                </div>
+
+                <div class="appointments-stack" id="overviewDoctorStack">
+                  <!-- Injected via JavaScript -->
+                </div>
+              </section>
+
+              <!-- Hospital System Audit Timeline -->
+              <section class="console-panel">
+                <div class="panel-header-row">
+                  <div class="panel-title-group">
+                    <h3>Hospital Operational Audit Log</h3>
+                    <p>Real-time transaction stream across clinical databases</p>
+                  </div>
+                  <span class="status-pill confirmed" style="font-size: 11px;">Master Audit</span>
+                </div>
+
+                <div class="timeline-channel">
+                  <div class="timeline-item">
+                    <div class="timeline-checkpoint">👨‍⚕️</div>
+                    <div class="timeline-body">
+                      <h5>Doctor Roster Updated</h5>
+                      <p>OPD Hours for Dr. Rohan Iyer synchronized for Block C Room 108.</p>
+                      <div class="timeline-time">Today, 10:15 AM • Admin Sunny</div>
+                    </div>
+                  </div>
+
+                  <div class="timeline-item">
+                    <div class="timeline-checkpoint">🔒</div>
+                    <div class="timeline-body">
+                      <h5>Security Credentials Rotated</h5>
+                      <p>Administrator credentials validated for ID: Sunny123 with cryptographic session safety.</p>
+                      <div class="timeline-time">Today, 08:30 AM • Core Auth Service</div>
+                    </div>
+                  </div>
+
+                  <div class="timeline-item">
+                    <div class="timeline-checkpoint">📂</div>
+                    <div class="timeline-body">
+                      <h5>Diagnostic Reports Vault Backup</h5>
+                      <p>1,248 longitudinal patient records archived with verified hash integrity.</p>
+                      <div class="timeline-time">Yesterday, 11:45 PM • Automated Cron</div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+            </div>
+
+            <!-- Right Column: Hospital Operations Dossier & Infrastructure Gauges -->
+            <div style="display: flex; flex-direction: column; gap: 28px;">
+
+              <!-- Hospital Operations Dossier -->
+              <section class="health-summary-dossier" style="cursor: pointer;" onclick="openAdminProfileModal()" title="Click to Edit Admin Profile">
+                <div class="dossier-patient-hero">
+                  <div class="dossier-avatar-large" id="dossierAvatarFrame">
+                    <span id="dossierAvatarText">AD</span>
+                  </div>
+                  <div class="dossier-meta">
+                    <h4 class="adm-name-slot">Sunny Kumar</h4>
+                    <p>Administrator ID: #ADM-Sunny123</p>
+                    <span class="status-pill confirmed" style="margin-top: 6px; font-size: 11px;">Super Administrator • Click to Edit</span>
+                  </div>
+                </div>
+
+                <!-- Hospital Parameters Bio Matrix -->
+                <div class="bio-matrix-grid">
+                  <div class="bio-cell">
+                    <div class="label">Hospital Entity</div>
+                    <div class="value" id="dossierClinicName" style="font-size: 13.5px;">Swasthya Mitra</div>
+                  </div>
+                  <div class="bio-cell">
+                    <div class="label">Active Port</div>
+                    <div class="value" style="font-size: 14px;">Port 8081</div>
+                  </div>
+                  <div class="bio-cell">
+                    <div class="label">Slot Interval</div>
+                    <div class="value" id="dossierSlotVal" style="font-size: 14px;">30 Minutes</div>
+                  </div>
+                  <div class="bio-cell">
+                    <div class="label">Booking Policy</div>
+                    <div class="value" style="font-size: 13px; color: var(--emerald-success);">Live Open</div>
+                  </div>
+                </div>
+
+                <!-- Hospital Resource Utilization Gauges -->
+                <div class="vitals-meter-group">
+                  <div class="meter-row" onclick="event.stopPropagation(); showToast('OPD Capacity: 78% utilized across all 4 departments')">
+                    <div class="meter-label-row">
+                      <span>🏥 OPD Chamber Utilization</span>
+                      <span>78% (Peak Capacity)</span>
+                    </div>
+                    <div class="sunken-track">
+                      <div class="glossy-fill-bar bp" style="width: 78%;"></div>
+                    </div>
+                  </div>
+
+                  <div class="meter-row" onclick="event.stopPropagation(); showToast('Server Load: 18% CPU • 52ms latency')">
+                    <div class="meter-label-row">
+                      <span>⚡ Core Server Workload</span>
+                      <span>18% (Optimal Zero Latency)</span>
+                    </div>
+                    <div class="sunken-track">
+                      <div class="glossy-fill-bar sugar" style="width: 18%;"></div>
+                    </div>
+                  </div>
+
+                  <div class="meter-row" onclick="event.stopPropagation(); showToast('Pharmacy Stock: 92% available in central repository')">
+                    <div class="meter-label-row">
+                      <span>💊 Pharmacy Formulary Stock</span>
+                      <span>92% Available</span>
+                    </div>
+                    <div class="sunken-track">
+                      <div class="glossy-fill-bar pulse" style="width: 92%;"></div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Infrastructure Health Panel with 3D Illustration -->
+              <section class="health-tips-panel">
+                <div class="health-tip-visual">
+                  <img src="images/admin_banner_3d.jpg" alt="Hospital Command Center" width="380" height="160">
+                </div>
+                <div class="status-pill confirmed" style="align-self: flex-start; font-size: 11px;">
+                  🏛️ Central Command Protocol
+                </div>
+                <h4>High-Availability Health Data Fabric</h4>
+                <p>All appointment transactions, doctor prescription signatures, and patient records are backed up across localized in-memory cache and transactional database stores.</p>
+                <button type="button" class="btn-tactile-secondary" style="align-self: flex-start; font-size: 12.5px; padding: 8px 16px;" onclick="showToast('Infrastructure diagnostic check: 100% healthy')">
+                  Run Diagnostic Check →
+                </button>
+              </section>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ==================================================================
+             VIEW 2: DOCTOR MANAGEMENT
+             ================================================================== -->
+        <div class="dashboard-view" id="view-doctors">
+          <div class="section-hero-header">
+            <div>
+              <h2>👨‍⚕️ Specialist Doctor Management & Onboarding</h2>
+              <p>Register new physician accounts, assign clinical departments, OPD chambers, and manage credentials.</p>
+            </div>
+            <button type="button" class="btn-action-teal" onclick="document.getElementById('docName').focus()">
+              <span>➕</span> Add New Doctor
+            </button>
+          </div>
+
+          <!-- Create Doctor Form Console -->
+          <div class="console-panel" style="margin-bottom: 28px;">
+            <div class="panel-header-row">
+              <div class="panel-title-group">
+                <h3>Register Specialist Doctor Account</h3>
+                <p>System automatically generates secure access credentials for physician login</p>
+              </div>
+              <span class="status-pill confirmed">Secure Onboarding</span>
+            </div>
+
+            <form onsubmit="handleCreateDoctorSubmit(event)">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="modal-field">
+                  <label>Doctor Full Name</label>
+                  <input type="text" class="modal-input" id="docName" placeholder="e.g. Dr. Rohan Iyer" required>
+                </div>
+                <div class="modal-field">
+                  <label>Clinical Specialty</label>
+                  <input type="text" class="modal-input" id="docSpec" placeholder="e.g. Orthopedics, Neurology" required>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;">
+                <div class="modal-field">
+                  <label>Login Email Address</label>
+                  <input type="email" class="modal-input" id="docEmail" placeholder="doctor@aura.health" required>
+                </div>
+                <div class="modal-field">
+                  <label>Auto-Generated Temporary Password</label>
+                  <input type="text" class="modal-input" id="docPass" value="Doc@8921" required>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;">
+                <div class="modal-field">
+                  <label>Assigned Chamber / OPD Room</label>
+                  <input type="text" class="modal-input" id="docRoom" value="Room 108, Block C" required>
+                </div>
+                <div class="modal-field">
+                  <label>Daily Consulting Hours</label>
+                  <input type="text" class="modal-input" id="docHours" value="09:00 – 17:00" required>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 12px; margin-top: 18px;">
+                <button type="submit" class="btn-action-teal" style="flex: 1; justify-content: center; padding: 12px;">
+                  <span>➕</span> Create Doctor Profile & Issue Credentials
+                </button>
+                <button type="reset" class="btn-tactile-secondary">Reset</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Credential Alert Banner (when doctor created) -->
+          <div id="credentialNotificationCard"></div>
+
+          <!-- Doctor Roster Table -->
+          <div class="data-table-card">
+            <h4 style="margin-bottom: 14px; font-size: 16.5px; font-weight: 800; color: var(--navy-dark);">Current Specialist Roster</h4>
+            <table class="skeuo-table">
+              <thead>
+                <tr>
+                  <th>Doctor Name</th>
+                  <th>Department / Specialty</th>
+                  <th>Chamber</th>
+                  <th>Login Email</th>
+                  <th>Assigned Password</th>
+                  <th>Rating</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="doctorsTableBody">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             VIEW 3: USER & PATIENT MANAGEMENT
+             ================================================================== -->
+        <div class="dashboard-view" id="view-users">
+          <div class="section-hero-header">
+            <div>
+              <h2>👥 System User Accounts & Patient Registry</h2>
+              <p>Master registry of all registered patient accounts, staff privileges, and access credentials.</p>
+            </div>
+            <button type="button" class="btn-tactile-secondary" onclick="showToast('Exporting User Registry CSV...')">
+              <span>📥</span> Export User List
+            </button>
+          </div>
+
+          <!-- User Add/Edit Console -->
+          <div class="console-panel" style="margin-bottom: 28px;">
+            <div class="panel-header-row">
+              <div class="panel-title-group">
+                <h3>Add New User Account</h3>
+                <p>Register new patient or staff file in master directory</p>
+              </div>
+            </div>
+
+            <form onsubmit="handleCreateUserSubmit(event)">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="modal-field">
+                  <label>Full Name</label>
+                  <input type="text" class="modal-input" id="usrName" placeholder="Full name" required>
+                </div>
+                <div class="modal-field">
+                  <label>Email Address</label>
+                  <input type="email" class="modal-input" id="usrEmail" placeholder="user@gmail.com" required>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;">
+                <div class="modal-field">
+                  <label>Account Role</label>
+                  <select class="modal-select" id="usrRole">
+                    <option value="patient">Patient</option>
+                    <option value="doctor">Doctor</option>
+                    <option value="staff">Clinical Staff</option>
+                  </select>
+                </div>
+                <div class="modal-field">
+                  <label>Phone Number</label>
+                  <input type="tel" class="modal-input" id="usrPhone" placeholder="+91 98765 43210">
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 12px; margin-top: 18px;">
+                <button type="submit" class="btn-action-teal" style="flex: 1; justify-content: center; padding: 12px;">
+                  Add User to Registry
+                </button>
+                <button type="reset" class="btn-tactile-secondary">Reset</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Users Table -->
+          <div class="data-table-card">
+            <h4 style="margin-bottom: 14px; font-size: 16.5px; font-weight: 800; color: var(--navy-dark);">Master User Directory</h4>
+            <table class="skeuo-table">
+              <thead>
+                <tr>
+                  <th>User ID</th>
+                  <th>Full Name</th>
+                  <th>Email Address</th>
+                  <th>Phone</th>
+                  <th>Account Role</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             VIEW 4: MASTER APPOINTMENT CONTROL
+             ================================================================== -->
+        <div class="dashboard-view" id="view-appointments">
+          <div class="section-hero-header">
+            <div>
+              <h2>📅 Master Appointment Operations & Scheduling Control</h2>
+              <p>Full control over all hospital bookings, appointment rescheduling, status overrides, and cancellations.</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn-tactile-secondary" onclick="filterMasterAppts('All')">All</button>
+              <button type="button" class="btn-tactile-secondary" onclick="filterMasterAppts('Confirmed')">Confirmed</button>
+              <button type="button" class="btn-tactile-secondary" onclick="filterMasterAppts('Pending')">Pending</button>
+            </div>
+          </div>
+
+          <!-- Reschedule Panel Box -->
+          <div class="console-panel" id="adminRescheduleBox" style="display: none; border-left: 4px solid var(--teal-accent); margin-bottom: 24px;">
+            <div class="panel-header-row">
+              <div class="panel-title-group">
+                <h3 id="reschedBoxTitle">Reschedule Appointment</h3>
+                <p>Modify date and time slot for selected booking</p>
+              </div>
+              <button type="button" class="btn-tactile-secondary" style="font-size: 11px;" onclick="closeRescheduleBox()">Cancel</button>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: flex-end;">
+              <div class="modal-field">
+                <label>New Consultation Date</label>
+                <input type="date" class="modal-input" id="admNewDate">
+              </div>
+              <div class="modal-field">
+                <label>New Consultation Time</label>
+                <input type="time" class="modal-input" id="admNewTime" value="11:00">
+              </div>
+              <div>
+                <button type="button" class="btn-action-teal" style="width: 100%; padding: 12px;" onclick="confirmAdminReschedule()">Confirm Reschedule</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Master Bookings Table -->
+          <div class="data-table-card">
+            <table class="skeuo-table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Patient Name</th>
+                  <th>Specialist Doctor</th>
+                  <th>Scheduled Date</th>
+                  <th>Time Slot</th>
+                  <th>Status</th>
+                  <th>Administrative Actions</th>
+                </tr>
+              </thead>
+              <tbody id="masterApptsTableBody">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             VIEW 5: CLINIC & SYSTEM SETTINGS
+             ================================================================== -->
+        <div class="dashboard-view" id="view-settings">
+          <div class="section-hero-header">
+            <div>
+              <h2>⚙️ Hospital Infrastructure & System Settings</h2>
+              <p>Configure hospital clinic name, slot duration parameters, emergency contact lines, and booking policy.</p>
+            </div>
+            <button type="button" class="btn-tactile-secondary" onclick="switchView('overview')">
+              <span>📊</span> Back to Overview
+            </button>
+          </div>
+
+          <div class="console-panel" style="max-width: 760px; margin: 0 auto;">
+            <form onsubmit="handleSettingsSubmit(event)">
+              <div class="modal-field">
+                <label>1. Hospital / Clinic Legal Entity Name</label>
+                <input type="text" class="modal-input" id="cfgClinicName" value="Swasthya Mitra Specialty Hospital" required>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
+                <div class="modal-field">
+                  <label>2. Consultation Slot Duration</label>
+                  <select class="modal-select" id="cfgSlotDuration">
+                    <option value="15">15 Minutes / Slot</option>
+                    <option value="20">20 Minutes / Slot</option>
+                    <option value="30" selected>30 Minutes / Slot</option>
+                    <option value="45">45 Minutes / Slot</option>
+                  </select>
+                </div>
+                <div class="modal-field">
+                  <label>3. Online Patient Self-Booking Policy</label>
+                  <select class="modal-select" id="cfgBookingPolicy">
+                    <option value="true" selected>Enabled (Patients can book open slots)</option>
+                    <option value="false">Disabled (Admin & OPD Triage Only)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
+                <div class="modal-field">
+                  <label>4. 24/7 Hospital Emergency Hotline</label>
+                  <input type="text" class="modal-input" id="cfgHotline" value="+91 108 / +91 98765 00108" required>
+                </div>
+                <div class="modal-field">
+                  <label>5. System Server Port</label>
+                  <input type="text" class="modal-input" id="cfgPort" value="8081" disabled style="opacity: 0.8;">
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 14px; margin-top: 24px;">
+                <button type="submit" class="btn-action-teal" style="flex: 1; justify-content: center; padding: 14px; font-size: 15px;">
+                  Save System Configuration
+                </button>
+                <button type="button" class="btn-tactile-secondary" onclick="switchView('overview')">
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             VIEW 6: PERFORMANCE ANALYTICS
+             ================================================================== -->
+        <div class="dashboard-view" id="view-analytics">
+          <div class="section-hero-header">
+            <div>
+              <h2>📈 Hospital Performance Analytics & Departmental Workload</h2>
+              <p>Real-time analytics on patient traffic, specialist workload distribution, and verified ratings.</p>
+            </div>
+            <div style="font-family:'Space Grotesk',sans-serif; font-size:22px; font-weight:800; color:var(--navy-dark);">
+              Throughput: <span style="color:var(--emerald-success);">94.2% Satisfied</span>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <!-- Specialty Workload Distribution -->
+            <div class="console-panel">
+              <div class="panel-header-row">
+                <div class="panel-title-group">
+                  <h3>Specialist Workload Distribution</h3>
+                  <p>Consultations distributed by clinical specialty</p>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 18px; margin-top: 10px;">
+                <div>
+                  <div style="display:flex; justify-content:space-between; font-size:13.5px; font-weight:700; margin-bottom:6px;">
+                    <span>Dr. Asha Rao (Cardiology)</span>
+                    <span>42% (12 Visits Today)</span>
+                  </div>
+                  <div class="sunken-track"><div class="glossy-fill-bar bp" style="width: 42%;"></div></div>
+                </div>
+
+                <div>
+                  <div style="display:flex; justify-content:space-between; font-size:13.5px; font-weight:700; margin-bottom:6px;">
+                    <span>Dr. Vikram Mehta (General Physician)</span>
+                    <span>30% (8 Visits Today)</span>
+                  </div>
+                  <div class="sunken-track"><div class="glossy-fill-bar sugar" style="width: 30%;"></div></div>
+                </div>
+
+                <div>
+                  <div style="display:flex; justify-content:space-between; font-size:13.5px; font-weight:700; margin-bottom:6px;">
+                    <span>Dr. Neha Kapoor (Dermatology)</span>
+                    <span>18% (5 Visits Today)</span>
+                  </div>
+                  <div class="sunken-track"><div class="glossy-fill-bar pulse" style="width: 18%;"></div></div>
+                </div>
+
+                <div>
+                  <div style="display:flex; justify-content:space-between; font-size:13.5px; font-weight:700; margin-bottom:6px;">
+                    <span>Dr. Rohan Iyer (Orthopedics)</span>
+                    <span>10% (3 Visits Today)</span>
+                  </div>
+                  <div class="sunken-track"><div class="glossy-fill-bar bp" style="width: 10%;"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Patient Satisfaction & Rating Metrics -->
+            <div class="console-panel">
+              <div class="panel-header-row">
+                <div class="panel-title-group">
+                  <h3>Clinical Rating Breakdown</h3>
+                  <p>Verified post-consultation patient feedback</p>
+                </div>
+                <span class="status-pill confirmed">⭐ 5.0 Average</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 10px;">
+                <div class="bio-cell" style="display: flex; justify-content: space-between; align-items: center;">
+                  <span>⭐⭐⭐⭐⭐ 5 Stars</span>
+                  <b>128 Reviews (98%)</b>
+                </div>
+                <div class="bio-cell" style="display: flex; justify-content: space-between; align-items: center;">
+                  <span>⭐⭐⭐⭐ 4 Stars</span>
+                  <b>3 Reviews (2%)</b>
+                </div>
+                <div class="bio-cell" style="display: flex; justify-content: space-between; align-items: center;">
+                  <span>⭐⭐⭐ 3 Stars or Below</span>
+                  <b>0 Reviews (0%)</b>
+                </div>
+                <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">
+                  100% of reviews are from verified patient consultations authenticated through Swasthya Mitra appointment IDs.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ======================================================================
+       MODAL 1: EDIT ADMIN PROFILE & PHOTO MODAL
+       ====================================================================== -->
+  <div class="skeuo-modal-backdrop" id="modalAdminProfile">
+    <div class="skeuo-modal-card">
+      <div class="modal-header-row">
+        <h3>👤 Edit Administrator Profile & Security</h3>
+        <button type="button" class="btn-close-modal" onclick="closeModal('modalAdminProfile')">✕</button>
+      </div>
+
+      <form onsubmit="handleAdminProfileSubmit(event)">
+        <!-- Photo Upload Preview Row -->
+        <div class="profile-avatar-row">
+          <div class="avatar-preview-box" id="admAvatarPreview">
+            <span id="admAvatarText">AD</span>
+          </div>
+          <div style="flex: 1;">
+            <b style="color: var(--navy-dark); font-size: 14.5px; display: block; margin-bottom: 4px;">Admin Profile Photo</b>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Upload image to update administrative badge picture.</p>
+            <input type="file" id="admPicInput" accept="image/*" class="modal-input" style="padding: 6px 10px; font-size: 12px;" onchange="handleAdminPhotoChange(event)">
+          </div>
+        </div>
+
+        <div class="modal-field">
+          <label>Administrator Full Name</label>
+          <input type="text" class="modal-input" id="admNameInput" value="Sunny Kumar" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="modal-field">
+            <label>Admin System ID</label>
+            <input type="text" class="modal-input" id="admIdInput" value="Sunny123" required>
+          </div>
+          <div class="modal-field">
+            <label>Admin Password</label>
+            <input type="password" class="modal-input" id="admPassInput" value="Sunny_babu" required>
+          </div>
+        </div>
+
+        <div class="modal-field">
+          <label>Hospital Email</label>
+          <input type="email" class="modal-input" id="admEmailInput" value="admin@aura.health" required>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 14px;">
+          <button type="submit" class="btn-action-teal" style="flex: 1; justify-content: center; padding: 12px;">Save Admin Profile</button>
+          <button type="button" class="btn-tactile-secondary" onclick="closeModal('modalAdminProfile')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Tactile Global Toast Notification -->
+  <div class="tactile-toast" id="tactileToast">
+    <span>✔</span>
+    <span id="toastMsg">Notification message</span>
+  </div>
+
+  <!-- ======================================================================
+       HOSPITAL ADMINISTRATIVE ENGINE SCRIPT
+       ====================================================================== -->
+  <script>
+    // 1. Initial State Seed
+    const DEFAULT_ADMIN = {
+      name: 'Sunny Kumar',
+      id: 'Sunny123',
+      pass: 'Sunny_babu',
+      email: 'admin@aura.health',
+      photo: ''
+    };
+
+    let adminDoctors = [
+      { id: 1, name: 'Dr. Asha Rao', spec: 'Cardiology', room: 'Room 304, Main Wing', email: 'asha@aura.health', pass: 'Doc@101', rating: '5.0 (128 rev)', hours: '09:00 – 16:00' },
+      { id: 2, name: 'Dr. Vikram Mehta', spec: 'General Physician', room: 'Room 102, OPD B', email: 'vikram@aura.health', pass: 'Doc@102', rating: '5.0 (84 rev)', hours: '09:00 – 17:00' },
+      { id: 3, name: 'Dr. Neha Kapoor', spec: 'Dermatology', room: 'Suite 510, Skin Wing', email: 'neha@aura.health', pass: 'Doc@103', rating: '5.0 (65 rev)', hours: '10:00 – 15:00' },
+      { id: 4, name: 'Dr. Rohan Iyer', spec: 'Orthopedics', room: 'Room 108, Block C', email: 'rohan@aura.health', pass: 'Doc@104', rating: '5.0 (92 rev)', hours: '11:00 – 18:00' }
+    ];
+
+    let adminUsers = [
+      { id: 10, name: 'Rahul Sharma', email: 'rahul@gmail.com', phone: '+91 9876543210', role: 'patient' },
+      { id: 11, name: 'Anita Desai', email: 'anita@gmail.com', phone: '+91 9876543211', role: 'patient' },
+      { id: 12, name: 'Priya Verma', email: 'priya@gmail.com', phone: '+91 9876543212', role: 'patient' },
+      { id: 14, name: 'Rajesh Gupta', email: 'rajesh@gmail.com', phone: '+91 9876543214', role: 'patient' }
+    ];
+
+    let masterAppointments = [
+      { id: 101, patient: 'Rahul Sharma', doc: 'Dr. Asha Rao', date: '2026-10-16', time: '10:30', status: 'Confirmed' },
+      { id: 102, patient: 'Anita Desai', doc: 'Dr. Vikram Mehta', date: '2026-10-21', time: '14:00', status: 'Confirmed' },
+      { id: 103, patient: 'Priya Verma', doc: 'Dr. Neha Kapoor', date: '2026-11-04', time: '11:00', status: 'Pending' },
+      { id: 104, patient: 'Rajesh Gupta', doc: 'Dr. Rohan Iyer', date: '2026-10-19', time: '15:30', status: 'Confirmed' }
+    ];
+
+    let currentAdmin = DEFAULT_ADMIN;
+    let rescheduleTargetId = null;
+    let currentPhotoDataUrl = '';
+
+    // Load from LocalStorage if present
+    try {
+      const savedAdm = JSON.parse(localStorage.getItem('aura_health_admin')) || JSON.parse(localStorage.getItem('aura_health_user'));
+      if (savedAdm && (savedAdm.role === 'admin' || savedAdm.id === 'Sunny123')) {
+        currentAdmin = { ...DEFAULT_ADMIN, ...savedAdm };
+      }
+      const savedDb = JSON.parse(localStorage.getItem('aura_health_db'));
+      if (savedDb) {
+        if (savedDb.users) {
+          const docs = savedDb.users.filter(u => u.role === 'doctor');
+          if (docs.length >= 4) adminDoctors = docs;
+          const pats = savedDb.users.filter(u => u.role === 'patient');
+          if (pats.length >= 4) adminUsers = pats;
+        }
+      }
+    } catch(e) {}
+
+    // 2. View Switching Controller
+    function switchView(viewId) {
+      document.querySelectorAll('.dashboard-view').forEach(v => v.classList.remove('active'));
+      const target = document.getElementById('view-' + viewId);
+      if (target) {
+        target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+      const activeNav = document.getElementById('nav-' + viewId);
+      if (activeNav) activeNav.classList.add('active');
+
+      if (viewId === 'doctors') renderDoctorsTable();
+      if (viewId === 'users') renderUsersTable();
+      if (viewId === 'appointments') renderMasterAppts();
+
+      showToast(`Switched to ${viewId.replace('-', ' ').toUpperCase()} management`);
+    }
+
+    // 3. Render Doctors
+    function renderOverviewDoctors() {
+      const stack = document.getElementById('overviewDoctorStack');
+      if (!stack) return;
+
+      stack.innerHTML = adminDoctors.map(d => `
+        <div class="appt-tactile-card" data-search="${d.name} ${d.spec}">
+          <div class="date-capsule">
+            <div class="month">DOC</div>
+            <div class="day">0${d.id || '1'}</div>
+          </div>
+          <div class="appt-details">
+            <h4>${d.name}</h4>
+            <span class="specialty">${d.spec} • ${d.room || 'Room 304'}</span>
+            <div class="appt-meta-specs">
+              <span>⏰ ${d.hours || '09:00 – 16:00'}</span>
+              <span>⭐ ${d.rating || '5.0 (100+)'}</span>
+            </div>
+          </div>
+          <div class="appt-actions-slot">
+            <span class="status-pill confirmed">● Active</span>
+            <button type="button" class="btn-tactile-secondary" style="padding: 5px 10px; font-size: 11px;" onclick="switchView('doctors')">Manage</button>
+          </div>
+        </div>
+      `).join('');
+
+      const statDoc = document.getElementById('statDoctorCount');
+      if (statDoc) statDoc.textContent = String(adminDoctors.length).padStart(2, '0');
+      const badge = document.getElementById('sidebarDocBadge');
+      if (badge) badge.textContent = `${adminDoctors.length} Active`;
+      const welcomeCount = document.getElementById('welcomeDocCount');
+      if (welcomeCount) welcomeCount.textContent = `${adminDoctors.length} specialist doctors`;
+    }
+
+    function renderDoctorsTable() {
+      const tbody = document.getElementById('doctorsTableBody');
+      if (!tbody) return;
+
+      tbody.innerHTML = adminDoctors.map(d => `
+        <tr data-search="${d.name} ${d.spec}">
+          <td><b>${d.name}</b></td>
+          <td><span class="status-pill confirmed">${d.spec}</span></td>
+          <td>${d.room || 'Room 304'}</td>
+          <td><code>${d.email}</code></td>
+          <td><code>${d.pass}</code></td>
+          <td>⭐ ${d.rating || '5.0'}</td>
+          <td>
+            <button type="button" class="btn-tactile-secondary" style="font-size:11px;padding:4px 8px;color:var(--ruby-danger);" onclick="deleteDoctor(${d.id})">Remove</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function deleteDoctor(id) {
+      if (!confirm('Are you sure you want to remove this doctor from the active roster?')) return;
+      adminDoctors = adminDoctors.filter(d => d.id !== id);
+      renderOverviewDoctors();
+      renderDoctorsTable();
+      showToast('Doctor removed from hospital roster.');
+    }
+
+    function handleCreateDoctorSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('docName').value.trim();
+      const spec = document.getElementById('docSpec').value.trim();
+      const email = document.getElementById('docEmail').value.trim();
+      const pass = document.getElementById('docPass').value.trim();
+      const room = document.getElementById('docRoom').value.trim();
+      const hours = document.getElementById('docHours').value.trim();
+
+      const newDoc = {
+        id: adminDoctors.length + 1,
+        name, spec, email, pass, room, hours,
+        rating: '5.0 (0 rev)'
+      };
+
+      adminDoctors.unshift(newDoc);
+      renderOverviewDoctors();
+      renderDoctorsTable();
+
+      const notifyCard = document.getElementById('credentialNotificationCard');
+      if (notifyCard) {
+        notifyCard.innerHTML = `
+          <div class="console-panel" style="border-left: 4px solid var(--teal-accent); margin-bottom: 24px; padding: 18px;">
+            <h4 style="color:var(--teal-accent); margin-bottom: 4px;">Credentials Generated for ${name}</h4>
+            <p style="font-size: 13.5px; color: var(--text-main);">Share these login credentials with the doctor to access their Doctor Console:</p>
+            <div style="font-family: monospace; font-size: 14px; margin-top: 6px;">
+              Email: <b>${email}</b> | Temporary Password: <b>${pass}</b>
+            </div>
+          </div>
+        `;
+      }
+
+      showToast(`Doctor account created for ${name}! Credentials displayed.`);
+      document.getElementById('docName').value = '';
+      document.getElementById('docSpec').value = '';
+      document.getElementById('docEmail').value = '';
+      document.getElementById('docPass').value = 'Doc@' + Math.floor(1000 + Math.random()*9000);
+    }
+
+    // 4. Render Users
+    function renderUsersTable() {
+      const tbody = document.getElementById('usersTableBody');
+      if (!tbody) return;
+
+      tbody.innerHTML = adminUsers.map(u => `
+        <tr data-search="${u.name} ${u.email}">
+          <td>#USR-${u.id}</td>
+          <td><b>${u.name}</b></td>
+          <td><code>${u.email}</code></td>
+          <td>${u.phone || 'N/A'}</td>
+          <td><span class="status-pill confirmed">${u.role.toUpperCase()}</span></td>
+          <td>
+            <button type="button" class="btn-tactile-secondary" style="font-size:11px;padding:4px 8px;color:var(--ruby-danger);" onclick="deleteUser(${u.id})">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function deleteUser(id) {
+      if (!confirm('Delete user file from master registry?')) return;
+      adminUsers = adminUsers.filter(u => u.id !== id);
+      renderUsersTable();
+      showToast('User record removed.');
+    }
+
+    function handleCreateUserSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('usrName').value.trim();
+      const email = document.getElementById('usrEmail').value.trim();
+      const role = document.getElementById('usrRole').value;
+      const phone = document.getElementById('usrPhone').value.trim();
+
+      adminUsers.unshift({
+        id: adminUsers.length + 10,
+        name, email, role, phone
+      });
+
+      renderUsersTable();
+      showToast(`User account created for ${name} (${role.toUpperCase()})`);
+      document.getElementById('usrName').value = '';
+      document.getElementById('usrEmail').value = '';
+      document.getElementById('usrPhone').value = '';
+    }
+
+    // 5. Render Master Appointments
+    function renderMasterAppts(filter = 'All') {
+      const tbody = document.getElementById('masterApptsTableBody');
+      if (!tbody) return;
+
+      const list = filter === 'All' ? masterAppointments : masterAppointments.filter(a => a.status === filter);
+      tbody.innerHTML = list.map(a => `
+        <tr data-search="${a.patient} ${a.doc}">
+          <td><b>#BK-${a.id}</b></td>
+          <td><b>${a.patient}</b></td>
+          <td>${a.doc}</td>
+          <td>${a.date}</td>
+          <td>${a.time}</td>
+          <td><span class="status-pill ${a.status==='Confirmed'?'confirmed':'pending'}">● ${a.status}</span></td>
+          <td>
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn-tactile-secondary" style="font-size:11px;padding:4px 8px;" onclick="openRescheduleBox(${a.id})">Reschedule</button>
+              <button type="button" class="btn-tactile-secondary" style="font-size:11px;padding:4px 8px;color:var(--ruby-danger);" onclick="cancelMasterAppt(${a.id})">Cancel</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterMasterAppts(status) {
+      renderMasterAppts(status);
+      showToast(`Showing ${status} bookings`);
+    }
+
+    function cancelMasterAppt(id) {
+      if (!confirm('Cancel appointment #' + id + '?')) return;
+      const appt = masterAppointments.find(a => a.id === id);
+      if (appt) {
+        appt.status = 'Cancelled';
+        renderMasterAppts();
+        showToast(`Appointment #${id} marked Cancelled`);
+      }
+    }
+
+    function openRescheduleBox(id) {
+      rescheduleTargetId = id;
+      const appt = masterAppointments.find(a => a.id === id);
+      if (!appt) return;
+      document.getElementById('reschedBoxTitle').textContent = `Reschedule Appointment #${id} (${appt.patient})`;
+      document.getElementById('admNewDate').value = appt.date;
+      document.getElementById('admNewTime').value = appt.time;
+      document.getElementById('adminRescheduleBox').style.display = 'block';
+      document.getElementById('adminRescheduleBox').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeRescheduleBox() {
+      document.getElementById('adminRescheduleBox').style.display = 'none';
+      rescheduleTargetId = null;
+    }
+
+    function confirmAdminReschedule() {
+      if (!rescheduleTargetId) return;
+      const appt = masterAppointments.find(a => a.id === rescheduleTargetId);
+      if (!appt) return;
+      const newD = document.getElementById('admNewDate').value;
+      const newT = document.getElementById('admNewTime').value;
+
+      appt.date = newD;
+      appt.time = newT;
+      appt.status = 'Confirmed';
+      renderMasterAppts();
+      closeRescheduleBox();
+      showToast(`Appointment #${appt.id} rescheduled to ${newD} at ${newT}!`);
+    }
+
+    // 6. Settings Controller
+    function handleSettingsSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('cfgClinicName').value.trim();
+      const slot = document.getElementById('cfgSlotDuration').value;
+
+      document.getElementById('dossierClinicName').textContent = name;
+      document.getElementById('dossierSlotVal').textContent = `${slot} Minutes`;
+      showToast('System configuration & booking policies updated successfully!');
+      switchView('overview');
+    }
+
+    // 7. Notification Popover Controller
+    function toggleAdminNotif(e) {
+      if (e) e.stopPropagation();
+      const pop = document.getElementById('adminNotifPopover');
+      if (pop) pop.classList.toggle('active');
+    }
+
+    function clearAdminNotifs() {
+      const pop = document.getElementById('adminNotifPopover');
+      if (pop) {
+        pop.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px;">No unread system alerts.</div>';
+      }
+      const led = document.getElementById('notif-led');
+      if (led) led.style.display = 'none';
+      showToast('System alerts marked read.');
+    }
+
+    document.addEventListener('click', (e) => {
+      const pop = document.getElementById('adminNotifPopover');
+      if (pop && pop.classList.contains('active') && !pop.contains(e.target) && !e.target.closest('#btnAdminNotif')) {
+        pop.classList.remove('active');
+      }
+    });
+
+    // 8. Admin Profile & Photo Modal Controller
+    function openAdminProfileModal() {
+      document.getElementById('admNameInput').value = currentAdmin.name || 'Sunny Kumar';
+      document.getElementById('admIdInput').value = currentAdmin.id || 'Sunny123';
+      document.getElementById('admPassInput').value = currentAdmin.pass || 'Sunny_babu';
+      document.getElementById('admEmailInput').value = currentAdmin.email || 'admin@aura.health';
+
+      currentPhotoDataUrl = currentAdmin.photo || '';
+      updateAdminAvatarPreview();
+      openModal('modalAdminProfile');
+    }
+
+    function handleAdminPhotoChange(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        currentPhotoDataUrl = evt.target.result;
+        updateAdminAvatarPreview();
+        showToast('Photo chosen! Click "Save Admin Profile" to apply.');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateAdminAvatarPreview() {
+      const box = document.getElementById('admAvatarPreview');
+      if (!box) return;
+      if (currentPhotoDataUrl) {
+        box.innerHTML = `<img src="${currentPhotoDataUrl}" alt="Admin Photo">`;
+      } else {
+        box.innerHTML = `<span id="admAvatarText">AD</span>`;
+      }
+    }
+
+    function handleAdminProfileSubmit(e) {
+      e.preventDefault();
+      currentAdmin.name = document.getElementById('admNameInput').value.trim();
+      currentAdmin.id = document.getElementById('admIdInput').value.trim();
+      currentAdmin.pass = document.getElementById('admPassInput').value.trim();
+      currentAdmin.email = document.getElementById('admEmailInput').value.trim();
+      if (currentPhotoDataUrl) {
+        currentAdmin.photo = currentPhotoDataUrl;
+      }
+
+      try {
+        localStorage.setItem('aura_health_admin', JSON.stringify(currentAdmin));
+        localStorage.setItem('aura_health_user', JSON.stringify(currentAdmin));
+      } catch(e){}
+
+      hydrateAdminUI();
+      closeModal('modalAdminProfile');
+      showToast('Administrator profile and credentials updated!');
+    }
+
+    function hydrateAdminUI() {
+      document.querySelectorAll('.adm-name-slot').forEach(el => el.textContent = currentAdmin.name);
+
+      const topFrame = document.getElementById('topbarAvatarFrame');
+      const dossierFrame = document.getElementById('dossierAvatarFrame');
+      const inits = (currentAdmin.name || 'AD').split(' ').map(n=>n[0]).join('').slice(0, 2).toUpperCase() || 'AD';
+
+      if (currentAdmin.photo) {
+        if (topFrame) topFrame.innerHTML = `<img src="${currentAdmin.photo}" alt="${currentAdmin.name}">`;
+        if (dossierFrame) dossierFrame.innerHTML = `<img src="${currentAdmin.photo}" alt="${currentAdmin.name}">`;
+      } else {
+        if (topFrame) topFrame.innerHTML = `<span>${inits}</span>`;
+        if (dossierFrame) dossierFrame.innerHTML = `<span>${inits}</span>`;
+      }
+    }
+
+    // 9. Modals Helper
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('active');
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('active');
+    }
+
+    // 10. Search Filter
+    function handleAdminSearch(q) {
+      const query = q.toLowerCase().trim();
+      document.querySelectorAll('.appt-tactile-card, .timeline-item, .skeuo-table tbody tr').forEach(el => {
+        const text = el.textContent.toLowerCase();
+        if (!query || text.includes(query)) {
+          el.style.display = '';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+    }
+
+    // 11. Toast Notification Trigger
+    function showToast(msg) {
+      const toast = document.getElementById('tactileToast');
+      const toastMsg = document.getElementById('toastMsg');
+      if (!toast || !toastMsg) return;
+      toastMsg.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3200);
+    }
+
+    function handleLogout() {
+      try {
+        localStorage.removeItem('aura_health_admin');
+        localStorage.removeItem('aura_health_user');
+      } catch(e){}
+    }
+
+    // On Load Initialization
+    hydrateAdminUI();
+    renderOverviewDoctors();
+    renderDoctorsTable();
+    renderUsersTable();
+    renderMasterAppts();
+  </script>
+</body>
+</html>

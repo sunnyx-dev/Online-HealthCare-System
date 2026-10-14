@@ -1852,6 +1852,14 @@
         window.location.href = 'doctor-dashboard/index.html';
         return;
       }
+      if (user.role === 'admin') {
+        try { 
+          localStorage.setItem('aura_health_admin', JSON.stringify(user)); 
+          localStorage.setItem('aura_health_user', JSON.stringify(user)); 
+        } catch(e) {}
+        window.location.href = 'admin-dashboard/index.html';
+        return;
+      }
 
       $('#site').style.display = 'none';
       $('#dashboard-app').classList.add('active');
