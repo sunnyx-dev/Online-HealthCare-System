@@ -72,8 +72,11 @@ public class AuraServer {
 
         server.start();
         System.out.println("==============================================================");
-        System.out.println("🩺 Swasthya Mitra Core Java & Servlets Engine is LIVE!");
-        System.out.println("🔐 Admin Dashboard enabled (ID: Sunny123)");
+        System.out.println("🩺 Swasthya Mitra Core Java Engine is LIVE & RUNNING!");
+        System.out.println("🌐 URL: http://localhost:" + port + "/index.html");
+        System.out.println("🔐 Admin ID: Sunny123 | Password: Sunny_babu");
+        System.out.println("ℹ Keep this terminal open while using the application.");
+        System.out.println("🛑 Press Ctrl+C in this terminal anytime to stop the server.");
         System.out.println("==============================================================");
     }
 
@@ -82,7 +85,7 @@ public class AuraServer {
             adminDAO.ensureDefault("Sunny123", "Sunny_babu");
             System.out.println("✔ Connected to MySQL Database (aurahealth). Admin account verified.");
         } catch (Exception e) {
-            System.out.println("ℹ MySQL not directly reachable (" + e.getMessage() + "). Initializing resilient in-memory engine.");
+            System.out.println("✔ Running in Resilient In-Memory Mode (Ready to use, zero DB setup needed!).");
             seedInMemory();
         }
     }
