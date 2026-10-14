@@ -27,5 +27,10 @@ dist-ssr
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
 *.sw?
+
+# Build outputs
+/target/
+/AuraHealth/
+
+
