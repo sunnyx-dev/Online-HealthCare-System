@@ -1844,6 +1844,14 @@
         window.location.href = 'patient-dashboard/index.html';
         return;
       }
+      if (user.role === 'doctor') {
+        try { 
+          localStorage.setItem('aura_health_doctor', JSON.stringify(user)); 
+          localStorage.setItem('aura_health_user', JSON.stringify(user)); 
+        } catch(e) {}
+        window.location.href = 'doctor-dashboard/index.html';
+        return;
+      }
 
       $('#site').style.display = 'none';
       $('#dashboard-app').classList.add('active');
