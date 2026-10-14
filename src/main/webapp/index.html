@@ -745,6 +745,481 @@
       .sidebar-nav-btn { white-space: nowrap; }
       .main-content { padding: 24px 16px; }
       .nav-links { display: none; }
+    /* ==========================================================================
+       Skeuomorphic Patient Console Styles
+       ========================================================================== */
+    .patient-console-container {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .welcome-banner {
+      background: var(--surface-raised);
+      border: 1.5px solid var(--border);
+      border-top: 2.5px solid #ffffff;
+      border-bottom: 2px solid var(--border-dark);
+      border-radius: 20px;
+      box-shadow: var(--skeuo-raised);
+      padding: 28px 34px;
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      align-items: center;
+      gap: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .welcome-banner::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      box-shadow: 0 1px 4px rgba(13, 148, 136, 0.4);
+    }
+    .banner-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 12px;
+      background: var(--surface-sunken);
+      box-shadow: var(--skeuo-sunken-sm);
+      border: 1px solid var(--border-dark);
+      border-radius: 99px;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 14px;
+    }
+    .welcome-text h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .welcome-text p {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      max-width: 520px;
+      line-height: 1.55;
+    }
+    .banner-action-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .banner-illustration-frame {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--skeuo-raised), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+      border: 2px solid rgba(255, 255, 255, 0.95);
+      background: var(--surface-raised);
+    }
+    .banner-illustration-frame img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+    .banner-illustration-frame:hover img {
+      transform: scale(1.03);
+    }
+    .stat-cards-dim-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 22px;
+    }
+    .stat-card-dim {
+      background: var(--surface-raised);
+      border: 1.5px solid var(--border);
+      border-top: 2px solid #ffffff;
+      border-bottom: 2px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: var(--skeuo-raised);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    .stat-card-dim:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--skeuo-raised-hover);
+    }
+    .stat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .stat-icon-vault {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--surface-raised);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-top: 1.5px solid rgba(255, 255, 255, 0.95);
+      border-bottom: 1.5px solid var(--border-dark);
+      box-shadow: var(--skeuo-raised-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .stat-trend-chip {
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 99px;
+      background: var(--surface-sunken);
+      box-shadow: var(--skeuo-sunken-sm);
+      border: 1px solid var(--border-dark);
+    }
+    .stat-trend-chip.success { color: #059669; }
+    .stat-trend-chip.info { color: var(--primary); }
+    .stat-card-dim h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .stat-card-dim .stat-value {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+    .stat-card-dim .stat-footer-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: auto;
+      border-top: 1px solid var(--border-dark);
+      padding-top: 8px;
+    }
+    .quick-actions-bar {
+      background: var(--surface-raised);
+      border: 1.5px solid var(--border);
+      border-top: 2px solid #ffffff;
+      border-bottom: 2px solid var(--border-dark);
+      border-radius: 16px;
+      padding: 20px 26px;
+      box-shadow: var(--skeuo-raised);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .quick-actions-bar h4 {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .quick-actions-bar p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+    .quick-buttons-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .dashboard-grid-layout {
+      display: grid;
+      grid-template-columns: 1.6fr 1.1fr;
+      gap: 24px;
+    }
+    .console-panel {
+      background: var(--surface-raised);
+      border: 1.5px solid var(--border);
+      border-top: 2px solid #ffffff;
+      border-bottom: 2px solid var(--border-dark);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: var(--skeuo-raised);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .panel-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 14px;
+      border-bottom: 1.5px solid var(--border-dark);
+    }
+    .panel-title-group h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .panel-title-group p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+    .appointments-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .appt-tactile-card {
+      background: var(--surface-raised);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-top: 1.5px solid rgba(255, 255, 255, 0.95);
+      border-bottom: 1.5px solid var(--border-dark);
+      border-radius: 14px;
+      padding: 16px 18px;
+      box-shadow: var(--skeuo-raised-sm);
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 16px;
+      transition: var(--transition);
+    }
+    .appt-tactile-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--skeuo-raised-hover);
+    }
+    .date-capsule {
+      width: 54px;
+      padding: 6px 4px;
+      background: var(--surface-sunken);
+      box-shadow: var(--skeuo-sunken-sm);
+      border: 1px solid var(--border-dark);
+      border-radius: 10px;
+      text-align: center;
+      line-height: 1.15;
+    }
+    .date-capsule .month {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--primary);
+      text-transform: uppercase;
+    }
+    .date-capsule .day {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .appt-details h4 {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .appt-details .specialty {
+      font-size: 12.5px;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .appt-meta-specs {
+      display: flex;
+      gap: 12px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .appt-actions-slot {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    .timeline-channel {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .timeline-item {
+      display: flex;
+      gap: 14px;
+    }
+    .timeline-checkpoint {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--surface-raised);
+      border: 1.5px solid rgba(255, 255, 255, 0.95);
+      box-shadow: var(--skeuo-raised-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .timeline-body {
+      background: var(--surface-sunken);
+      box-shadow: var(--skeuo-sunken-sm);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 10px 14px;
+      flex: 1;
+    }
+    .timeline-body h5 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .timeline-body p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .timeline-time {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+    .health-summary-dossier {
+      background: var(--surface-raised);
+      border: 1.5px solid var(--border);
+      border-top: 2px solid #ffffff;
+      border-bottom: 2px solid var(--border-dark);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: var(--skeuo-raised);
+    }
+    .dossier-patient-hero {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-bottom: 16px;
+      border-bottom: 1.5px solid var(--border-dark);
+      margin-bottom: 18px;
+    }
+    .dossier-avatar-large {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--primary-gradient);
+      border: 2.5px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2), inset 0 2px 3px rgba(255, 255, 255, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #ffffff;
+      font-weight: 800;
+    }
+    .dossier-meta h4 {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .dossier-meta p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .bio-matrix-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .bio-cell {
+      background: var(--surface-sunken);
+      box-shadow: var(--skeuo-sunken-sm);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 10px 12px;
+      text-align: center;
+    }
+    .bio-cell .label {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .bio-cell .value {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .vitals-meter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .meter-row {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .meter-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .meter-label-row span:first-child { color: var(--text-muted); }
+    .meter-label-row span:last-child { color: var(--text); }
+    .sunken-track {
+      width: 100%;
+      height: 10px;
+      border-radius: 99px;
+      background: var(--surface-sunken);
+      box-shadow: var(--skeuo-sunken-sm);
+      border: 1px solid var(--border-dark);
+      overflow: hidden;
+      padding: 1px;
+    }
+    .glossy-fill-bar {
+      height: 100%;
+      border-radius: 99px;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.7);
+    }
+    .glossy-fill-bar.pulse { background: linear-gradient(90deg, #ec4899, #ef4444); }
+    .glossy-fill-bar.bp { background: linear-gradient(90deg, #0ea5e9, #0284c7); }
+    .glossy-fill-bar.sugar { background: linear-gradient(90deg, #10b981, #059669); }
+    .health-tips-panel {
+      background: var(--surface-raised);
+      border: 1.5px solid var(--border);
+      border-top: 2px solid #ffffff;
+      border-bottom: 2px solid var(--border-dark);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: var(--skeuo-raised);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .health-tip-visual {
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: var(--skeuo-raised-sm);
+      border: 1.5px solid rgba(255, 255, 255, 0.95);
+      background: #ffffff;
+    }
+    .health-tip-visual img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
+    }
+    .health-tips-panel h4 {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .health-tips-panel p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    @media (max-width: 1100px) {
+      .dashboard-grid-layout { grid-template-columns: 1fr; }
+      .welcome-banner { grid-template-columns: 1fr; }
+      .banner-illustration-frame { display: none; }
     }
   </style>
 </head>
@@ -1364,6 +1839,12 @@
       currentRole = user.role;
       closeLoginModal();
 
+      if (user.role === 'patient') {
+        try { localStorage.setItem('aura_health_user', JSON.stringify(user)); } catch(e) {}
+        window.location.href = 'patient-dashboard/index.html';
+        return;
+      }
+
       $('#site').style.display = 'none';
       $('#dashboard-app').classList.add('active');
 
@@ -1402,6 +1883,7 @@
         { id: 'feedback', label: '⭐ Patient Feedback', fn: renderDoctorFeedback }
       ],
       patient: [
+        { id: 'overview', label: '📊 Patient Console', fn: renderPatientDashboardOverview },
         { id: 'booking', label: '🗓️ Book Appointment', fn: renderPatientBooking },
         { id: 'appointments', label: '📋 Appointment History', fn: renderPatientAppointments },
         { id: 'history', label: '🩺 Medical History', fn: renderPatientMedicalHistory },
@@ -2040,6 +2522,291 @@
     /* =========================================================================
        3. PATIENT DASHBOARD TABS
        ========================================================================= */
+    function renderPatientDashboardOverview() {
+      const myAppts = DB.appointments.filter(a => a.pid == currentUser.id && a.status !== 'Cancelled');
+      const myHistory = DB.history.filter(h => h.pid == currentUser.id);
+      const patientInitials = (currentUser.name || 'Patient').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+      const patientIdTag = currentUser.id ? `#PAT-${2026}-${String(currentUser.id).padStart(2, '0')}` : '#PAT-2026-88';
+      
+      const html = `
+        <div class="patient-console-container">
+
+          <!-- Welcome Banner with 3D Medical Illustration -->
+          <section class="welcome-banner">
+            <div class="welcome-text">
+              <div class="banner-badge">
+                <span>●</span> Clinical Status: Monitored Normal
+              </div>
+              <h2>Welcome back, <br>${currentUser.name || '[Patient Name]'}</h2>
+              <p>Your biometrics and vitals are actively monitored. You have <b>${myAppts.length}</b> scheduled consultation${myAppts.length === 1 ? '' : 's'} and your encrypted health history is up to date.</p>
+              <div class="banner-action-row">
+                <button class="btn btn-primary" onclick="switchTab('booking')">
+                  <span>➕</span> Book New Consultation
+                </button>
+                <button class="btn btn-outline" onclick="switchTab('history')">
+                  <span>📋</span> View Clinical Records
+                </button>
+              </div>
+            </div>
+            <div class="banner-illustration-frame">
+              <img src="patient-dashboard/images/banner_medical_3d.jpg" alt="3D Medical Illustration" width="480" height="200">
+            </div>
+          </section>
+
+          <!-- Four Dimensional Statistic Cards -->
+          <section class="stat-cards-dim-grid">
+            <div class="stat-card-dim">
+              <div class="stat-header">
+                <div class="stat-icon-vault">📅</div>
+                <span class="stat-trend-chip info">${myAppts.length ? 'Active' : 'Standby'}</span>
+              </div>
+              <h3>Appointments</h3>
+              <div class="stat-value">${String(myAppts.length).padStart(2, '0')}</div>
+              <div class="stat-footer-text">${myAppts.length ? `Next: ${myAppts[0].date} at ${myAppts[0].time}` : 'No consultations currently scheduled'}</div>
+            </div>
+
+            <div class="stat-card-dim">
+              <div class="stat-header">
+                <div class="stat-icon-vault">💊</div>
+                <span class="stat-trend-chip success">Refill Safe</span>
+              </div>
+              <h3>Prescriptions & Logs</h3>
+              <div class="stat-value">${String(myHistory.length || 3).padStart(2, '0')}</div>
+              <div class="stat-footer-text">${myHistory.length ? `${myHistory.length} active logs recorded` : 'All ongoing dosages verified'}</div>
+            </div>
+
+            <div class="stat-card-dim">
+              <div class="stat-header">
+                <div class="stat-icon-vault">🔬</div>
+                <span class="stat-trend-chip success">Ready</span>
+              </div>
+              <h3>Lab Reports</h3>
+              <div class="stat-value">12</div>
+              <div class="stat-footer-text">CBC & Lipid Panel verified by Pathology</div>
+            </div>
+
+            <div class="stat-card-dim">
+              <div class="stat-header">
+                <div class="stat-icon-vault">📂</div>
+                <span class="stat-trend-chip info">100% Synced</span>
+              </div>
+              <h3>Medical Records</h3>
+              <div class="stat-value">28</div>
+              <div class="stat-footer-text">Encrypted Swasthya Mitra health vault</div>
+            </div>
+          </section>
+
+          <!-- Quick Actions Bar -->
+          <section class="quick-actions-bar">
+            <div>
+              <h4>Quick Healthcare Actions</h4>
+              <p>One-touch physical triggers for essential patient services</p>
+            </div>
+            <div class="quick-buttons-group">
+              <button class="btn btn-primary" onclick="switchTab('booking')">
+                <span>📅</span> Book Appointment
+              </button>
+              <button class="btn btn-outline" onclick="switchTab('appointments')">
+                <span>📋</span> My Appointments
+              </button>
+              <button class="btn btn-outline" onclick="switchTab('history')">
+                <span>🩺</span> Medical History
+              </button>
+              <button class="btn btn-outline" onclick="switchTab('ai')">
+                <span>🤖</span> Ask AI Helper
+              </button>
+            </div>
+          </section>
+
+          <!-- Main Two-Column Grid -->
+          <div class="dashboard-grid-layout">
+
+            <!-- Left Column: Upcoming Appointments & Recent Activity -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+
+              <!-- Upcoming Appointments Panel -->
+              <div class="console-panel">
+                <div class="panel-header-row">
+                  <div class="panel-title-group">
+                    <h3>Upcoming Appointments</h3>
+                    <p>Scheduled specialist consultations & clinical visits</p>
+                  </div>
+                  <button class="btn btn-outline btn-sm" onclick="switchTab('appointments')">View All</button>
+                </div>
+
+                <div class="appointments-stack">
+                  ${myAppts.length ? myAppts.map(a => {
+                    const doc = DB.users.find(u => u.id == a.did) || { name: 'Specialist Doctor', spec: 'General Medicine' };
+                    const dObj = new Date(a.date + 'T00:00:00');
+                    const monthStr = isNaN(dObj.getTime()) ? 'Date' : dObj.toLocaleString('en', { month: 'short' });
+                    const dayStr = isNaN(dObj.getTime()) ? a.date : String(dObj.getDate()).padStart(2, '0');
+                    const isConfirmed = a.status === 'Confirmed';
+
+                    return `
+                      <div class="appt-tactile-card">
+                        <div class="date-capsule">
+                          <div class="month">${monthStr}</div>
+                          <div class="day">${dayStr}</div>
+                        </div>
+                        <div class="appt-details">
+                          <h4>${doc.name}</h4>
+                          <span class="specialty">${doc.spec} • Consultation</span>
+                          <div class="appt-meta-specs">
+                            <span>⏰ ${a.time}</span>
+                            <span>🏥 Main Medical Wing</span>
+                          </div>
+                        </div>
+                        <div class="appt-actions-slot">
+                          <span class="badge ${isConfirmed ? 'badge-confirmed' : 'badge-pending'}">● ${a.status}</span>
+                          <button class="btn btn-outline btn-sm" style="padding: 3px 8px; font-size: 11px;" onclick="switchTab('appointments')">Details</button>
+                        </div>
+                      </div>
+                    `;
+                  }).join('') : `
+                    <div style="text-align: center; padding: 24px 16px; background: var(--surface-sunken); border-radius: 14px; box-shadow: var(--skeuo-sunken-sm);">
+                      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 12px;">You currently have no scheduled appointments.</p>
+                      <button class="btn btn-primary btn-sm" onclick="switchTab('booking')">Schedule a Visit Now</button>
+                    </div>
+                  `}
+                </div>
+              </div>
+
+              <!-- Recent Activity Timeline -->
+              <div class="console-panel">
+                <div class="panel-header-row">
+                  <div class="panel-title-group">
+                    <h3>Recent Clinical Activity</h3>
+                    <p>Audit stream of consultations, lab diagnostics & prescriptions</p>
+                  </div>
+                  <span class="badge badge-confirmed" style="font-size: 11px;">Live Stream</span>
+                </div>
+
+                <div class="timeline-channel">
+                  <div class="timeline-item">
+                    <div class="timeline-checkpoint">🔬</div>
+                    <div class="timeline-body">
+                      <h5>Diagnostic Chemistry Panel Updated</h5>
+                      <p>Complete Blood Count (CBC) and Metabolic Profile synchronized by Central Pathology.</p>
+                      <div class="timeline-time">Today, 09:30 AM • Health Vault Encrypted</div>
+                    </div>
+                  </div>
+
+                  <div class="timeline-item">
+                    <div class="timeline-checkpoint">💊</div>
+                    <div class="timeline-body">
+                      <h5>Prescription Refill Approved</h5>
+                      <p>Standard cardiovascular and wellness support regimen verified by consulting doctor.</p>
+                      <div class="timeline-time">Yesterday, 04:15 PM • Swasthya Mitra Pharmacy</div>
+                    </div>
+                  </div>
+
+                  <div class="timeline-item">
+                    <div class="timeline-checkpoint">🩺</div>
+                    <div class="timeline-body">
+                      <h5>Consultation Notes Synchronized</h5>
+                      <p>Clinical observation notes and OPD follow-up schedule updated in medical dossier.</p>
+                      <div class="timeline-time">Oct 11, 2026, 03:20 PM • Dr. Vikram Mehta</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Column: Patient Dossier, Vitals & Health Tips -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+
+              <!-- Patient Profile Dossier -->
+              <div class="health-summary-dossier">
+                <div class="dossier-patient-hero">
+                  <div class="dossier-avatar-large">
+                    <span>${patientInitials}</span>
+                  </div>
+                  <div class="dossier-meta">
+                    <h4>${currentUser.name || '[Patient Name]'}</h4>
+                    <p>${patientIdTag}</p>
+                    <span class="badge badge-confirmed" style="margin-top: 6px; font-size: 11px;">Verified Patient</span>
+                  </div>
+                </div>
+
+                <!-- 4-Cell Bio Matrix -->
+                <div class="bio-matrix-grid">
+                  <div class="bio-cell">
+                    <div class="label">Blood Group</div>
+                    <div class="value">O +ve</div>
+                  </div>
+                  <div class="bio-cell">
+                    <div class="label">Age / Gender</div>
+                    <div class="value">34 / M</div>
+                  </div>
+                  <div class="bio-cell">
+                    <div class="label">Height</div>
+                    <div class="value">178 cm</div>
+                  </div>
+                  <div class="bio-cell">
+                    <div class="label">Weight</div>
+                    <div class="value">72.4 kg</div>
+                  </div>
+                </div>
+
+                <!-- Vitals Gauges -->
+                <div class="vitals-meter-group">
+                  <div class="meter-row">
+                    <div class="meter-label-row">
+                      <span>❤️ Heart Rate</span>
+                      <span>72 BPM (Resting)</span>
+                    </div>
+                    <div class="sunken-track">
+                      <div class="glossy-fill-bar pulse" style="width: 72%;"></div>
+                    </div>
+                  </div>
+
+                  <div class="meter-row">
+                    <div class="meter-label-row">
+                      <span>🩺 Blood Pressure</span>
+                      <span>118 / 78 mmHg</span>
+                    </div>
+                    <div class="sunken-track">
+                      <div class="glossy-fill-bar bp" style="width: 60%;"></div>
+                    </div>
+                  </div>
+
+                  <div class="meter-row">
+                    <div class="meter-label-row">
+                      <span>🩸 Fasting Blood Glucose</span>
+                      <span>94 mg/dL</span>
+                    </div>
+                    <div class="sunken-track">
+                      <div class="glossy-fill-bar sugar" style="width: 48%;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Health Tips Panel with 3D Medical Illustration -->
+              <div class="health-tips-panel">
+                <div class="health-tip-visual">
+                  <img src="patient-dashboard/images/health_tip_3d.jpg" alt="3D Heart and Stethoscope Illustration" width="380" height="140">
+                </div>
+                <div class="badge badge-confirmed" style="align-self: flex-start; font-size: 11px;">
+                  💡 Daily Medical Advisory
+                </div>
+                <h4>Cardiovascular Vitality Routine</h4>
+                <p>Maintaining a 30-minute brisk walk daily reduces arterial stiffness by up to 24%. Combine with adequate hydration (2.5L/day) for optimal electrolyte balance.</p>
+                <button class="btn btn-outline btn-sm" style="align-self: flex-start;" onclick="switchTab('ai')">
+                  Ask AI Helper for Health Tips →
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      `;
+      $('#dashboardSectionBody').innerHTML = html;
+    }
+
     function renderPatientBooking() {
       const docs = DB.users.filter(u => u.role === 'doctor');
       const todayStr = new Date().toISOString().slice(0,10);

@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HealthCare+ Premium Skeuomorphic Patient Dashboard Console - Precision tactile medical management interface.">
+  <title>HealthCare+ | Patient Medical Console</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="dashboard-container">
+
+    <!-- ======================================================================
+         Skeuomorphic Sidebar Medical Chassis
+         ====================================================================== -->
+    <aside class="sidebar">
+      <!-- HealthCare+ Brand Emblem -->
+      <a href="javascript:void(0)" onclick="switchView('overview')" class="brand-badge" title="Go to Overview">
+        <div class="brand-logo-frame">
+          <img src="images/healthcare_plus_logo.jpg" alt="HealthCare+ 3D Emblem" width="48" height="48">
+        </div>
+        <div class="brand-info">
+          <h1>HealthCare<span>+</span></h1>
+          <p>Medical Console</p>
+        </div>
+      </a>
+
+      <!-- Navigation Tactile Switch Menu -->
+      <nav>
+        <ul class="nav-menu">
+          <li>
+            <a href="javascript:void(0)" class="nav-link active" id="nav-overview" onclick="switchView('overview')">
+              <span class="nav-icon">📊</span>
+              <span>Overview</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="nav-link" id="nav-appointments" onclick="switchView('appointments')">
+              <span class="nav-icon">📅</span>
+              <span>Appointments</span>
+              <span class="nav-badge" id="sidebarApptBadge">2 New</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="nav-link" id="nav-prescriptions" onclick="switchView('prescriptions')">
+              <span class="nav-icon">💊</span>
+              <span>Prescriptions</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="nav-link" id="nav-lab-reports" onclick="switchView('lab-reports')">
+              <span class="nav-icon">🔬</span>
+              <span>Lab Reports</span>
+              <span class="nav-badge">Ready</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="nav-link" id="nav-records" onclick="switchView('records')">
+              <span class="nav-icon">📂</span>
+              <span>Medical Records</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="nav-link" id="nav-consultations" onclick="switchView('consultations')">
+              <span class="nav-icon">🩺</span>
+              <span>Consultations</span>
+            </a>
+          </li>
+          <li style="margin-top: auto; padding-top: 16px;">
+            <a href="../index.html" class="nav-link" onclick="handleLogout()" style="color: var(--ruby-danger);">
+              <span class="nav-icon">🚪</span>
+              <span>Log Out</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- ======================================================================
+         Main Console Workstation
+         ====================================================================== -->
+    <main class="main-wrapper">
+
+      <!-- Topbar Console Navigation Bay -->
+      <header class="topbar">
+        <!-- Debossed Inset Search Bay -->
+        <div class="search-bay">
+          <span class="search-icon">🔍</span>
+          <input 
+            type="search" 
+            class="search-input" 
+            id="mainSearchInput"
+            placeholder="Search appointments, prescriptions, diagnostic records..." 
+            aria-label="Search records"
+            oninput="handleSearchFilter(this.value)"
+          >
+        </div>
+
+        <!-- Right Topbar Controls -->
+        <div class="topbar-actions">
+          <!-- Notification Bell with Popover Dropdown -->
+          <div class="notif-wrapper">
+            <button type="button" class="btn-icon-tactile" id="btnNotification" onclick="toggleNotificationPopover(event)" title="Notifications" aria-label="Notifications">
+              <span>🔔</span>
+              <span class="led-badge" id="notif-led" title="Unread alerts"></span>
+            </button>
+
+            <!-- Popup Dropdown Container (anchored directly below bell, hidden by default) -->
+            <div class="notification-popover" id="notificationPopover">
+              <div class="notification-header">
+                <h4>Medical Notifications</h4>
+                <button type="button" class="btn-tactile-secondary" style="font-size: 11px; padding: 3px 8px;" onclick="clearNotifications()">Clear All</button>
+              </div>
+              <div class="notification-item">
+                <b>🔬 CBC & Lipid Panel Ready</b>
+                <span>Central Pathology has released verified blood chemistry results.</span>
+              </div>
+              <div class="notification-item">
+                <b>📅 Tomorrow: Dr. Asha Rao Visit</b>
+                <span>Cardiology consultation at 10:30 AM in Main Medical Wing Room 304.</span>
+              </div>
+              <div class="notification-item">
+                <b>💊 Prescription Refill Dispatched</b>
+                <span>Atorvastatin 20mg approved and prepared by hospital pharmacy.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Patient Profile Console Pill (Click to Edit Profile & Photo) -->
+          <button type="button" class="patient-profile-pill" onclick="openProfileModal()" title="Click to Edit Profile & Picture">
+            <div class="patient-avatar-frame" id="topbarAvatarFrame">
+              <span id="topbarAvatarText">PT</span>
+            </div>
+            <div class="patient-meta-header">
+              <b class="patient-name-slot">[Patient Name]</b>
+              <span class="patient-id-slot">ID: #PAT-2026-88</span>
+            </div>
+            <span style="font-size: 11px; color: var(--teal-accent); margin-left: 4px;">✏️ Edit</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Scrollable Body (Houses All Views) -->
+      <div class="content-body">
+
+        <!-- ==================================================================
+             VIEW 1: OVERVIEW DASHBOARD
+             ================================================================== -->
+        <div class="dashboard-view active" id="view-overview">
+
+          <!-- Welcome Banner with 3D Medical Illustration -->
+          <section class="welcome-banner">
+            <div class="welcome-text">
+              <div class="banner-badge">
+                <span>●</span> Clinical Status: Monitored Normal
+              </div>
+              <h2>Welcome back, <br><span class="patient-name-slot">[Patient Name]</span></h2>
+              <p>Your biometrics and vitals are actively monitored. You have <b id="welcomeApptCount">2 upcoming consultations</b> scheduled this week and your recent blood chemistry report is ready for review.</p>
+              <div class="banner-action-row">
+                <button type="button" class="btn-tactile-primary" onclick="switchView('consultations')">
+                  <span>➕</span> Schedule Consultation
+                </button>
+                <button type="button" class="btn-tactile-secondary" onclick="switchView('records')">
+                  <span>📋</span> View Clinical Records
+                </button>
+              </div>
+            </div>
+            <div class="banner-illustration-frame">
+              <img src="images/banner_medical_3d.jpg" alt="3D Medical Console Holographic Illustration" width="480" height="220">
+            </div>
+          </section>
+
+          <!-- Four Dimensional Statistic Cards -->
+          <section class="stat-cards-grid" aria-label="Health Summary Statistics" style="margin-top: 28px;">
+            <!-- Card 1: Appointments -->
+            <article class="stat-card-dim" style="cursor: pointer;" onclick="switchView('appointments')" title="Click to view all appointments">
+              <div class="stat-header">
+                <div class="stat-icon-vault">📅</div>
+                <span class="stat-trend-chip info">Active</span>
+              </div>
+              <h3>Appointments</h3>
+              <div class="stat-value" id="stat-appt-count">02</div>
+              <div class="stat-footer-text">Next: Tomorrow at 10:30 AM</div>
+            </article>
+
+            <!-- Card 2: Prescriptions -->
+            <article class="stat-card-dim" style="cursor: pointer;" onclick="switchView('prescriptions')" title="Click to view all prescriptions">
+              <div class="stat-header">
+                <div class="stat-icon-vault">💊</div>
+                <span class="stat-trend-chip success">Refill Safe</span>
+              </div>
+              <h3>Prescriptions</h3>
+              <div class="stat-value">04</div>
+              <div class="stat-footer-text">3 Active • 1 Renewal due in 8 days</div>
+            </article>
+
+            <!-- Card 3: Lab Reports -->
+            <article class="stat-card-dim" style="cursor: pointer;" onclick="switchView('lab-reports')" title="Click to view laboratory reports">
+              <div class="stat-header">
+                <div class="stat-icon-vault">🔬</div>
+                <span class="stat-trend-chip success">Normal</span>
+              </div>
+              <h3>Lab Reports</h3>
+              <div class="stat-value">12</div>
+              <div class="stat-footer-text">Lipid Panel & CBC uploaded yesterday</div>
+            </article>
+
+            <!-- Card 4: Medical Records -->
+            <article class="stat-card-dim" style="cursor: pointer;" onclick="switchView('records')" title="Click to view records vault">
+              <div class="stat-header">
+                <div class="stat-icon-vault">📂</div>
+                <span class="stat-trend-chip info">100% Synced</span>
+              </div>
+              <h3>Medical Records</h3>
+              <div class="stat-value">28</div>
+              <div class="stat-footer-text">Encrypted cloud health vault</div>
+            </article>
+          </section>
+
+          <!-- Quick-Action Tactile Console Bar -->
+          <section class="quick-actions-bar" style="margin-top: 28px;">
+            <div class="quick-actions-title">
+              <h3>Quick Medical Actions</h3>
+              <p>One-touch physical triggers for essential patient services</p>
+            </div>
+            <div class="quick-buttons-group">
+              <button type="button" class="btn-action-teal" onclick="switchView('consultations')">
+                <span>📅</span> Book Appointment
+              </button>
+              <button type="button" class="btn-tactile-secondary" onclick="switchView('lab-reports')">
+                <span>📑</span> View Lab Reports
+              </button>
+              <button type="button" class="btn-tactile-secondary" onclick="openUploadModal()">
+                <span>📤</span> Upload Health Record
+              </button>
+            </div>
+          </section>
+
+          <!-- Two-Column Primary Control Grid -->
+          <div class="dashboard-grid-layout" style="margin-top: 28px;">
+
+            <!-- Left Column: Upcoming Appointments & Recent Activity -->
+            <div style="display: flex; flex-direction: column; gap: 28px;">
+
+              <!-- Upcoming Appointments Panel -->
+              <section class="console-panel">
+                <div class="panel-header-row">
+                  <div class="panel-title-group">
+                    <h3>Upcoming Appointments</h3>
+                    <p>Scheduled specialist consultations & clinical visits</p>
+                  </div>
+                  <button type="button" class="btn-tactile-secondary" style="padding: 7px 14px; font-size: 12px;" onclick="switchView('appointments')">View All</button>
+                </div>
+
+                <div class="appointments-stack" id="overviewApptsStack">
+                  <!-- Injected via JavaScript dynamically -->
+                </div>
+              </section>
+
+              <!-- Recent Activity Timeline Panel -->
+              <section class="console-panel">
+                <div class="panel-header-row">
+                  <div class="panel-title-group">
+                    <h3>Recent Clinical Activity</h3>
+                    <p>Real-time audit log of healthcare interactions & records</p>
+                  </div>
+                  <span class="status-pill confirmed" style="font-size: 11px;">Live Stream</span>
+                </div>
+
+                <div class="timeline-channel" id="overviewActivityChannel">
+                  <div class="timeline-item">
+                    <div class="timeline-checkpoint">🔬</div>
+                    <div class="timeline-body">
+                      <h5>Diagnostic Report Generated</h5>
+                      <p>Comprehensive Metabolic Panel and Lipid Profile published by Central Diagnostics Lab.</p>
+                      <div class="timeline-time">Today, 09:42 AM • Dr. Asha Rao reviewing</div>
+                    </div>
+                  </div>
+
+                  <div class="timeline-item">
+                    <div class="timeline-checkpoint">💊</div>
+                    <div class="timeline-body">
+                      <h5>Prescription Refilled & Dispatched</h5>
+                      <p>Atorvastatin 20mg (30 Tablets) and Metformin 500mg approved and prepared for pickup.</p>
+                      <div class="timeline-time">Yesterday, 04:15 PM • HealthCare+ Pharmacy</div>
+                    </div>
+                  </div>
+
+                  <div class="timeline-item">
+                    <div class="timeline-checkpoint">🩺</div>
+                    <div class="timeline-body">
+                      <h5>Tele-Consultation Completed</h5>
+                      <p>Follow-up consultation regarding blood pressure adjustment with Dr. Vikram Mehta concluded.</p>
+                      <div class="timeline-time">Oct 11, 2026, 03:30 PM • Notes added to health vault</div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+            </div>
+
+            <!-- Right Column: Patient Profile Dossier, Vitals Gauges, & Health Tips -->
+            <div style="display: flex; flex-direction: column; gap: 28px;">
+
+              <!-- Patient Profile & Bio Summary Dossier -->
+              <section class="health-summary-dossier" style="cursor: pointer;" onclick="openProfileModal()" title="Click to Edit Profile & Photo">
+                <div class="dossier-patient-hero">
+                  <div class="dossier-avatar-large" id="dossierAvatarFrame">
+                    <span id="dossierAvatarText">PT</span>
+                  </div>
+                  <div class="dossier-meta">
+                    <h4 class="patient-name-slot">[Patient Name]</h4>
+                    <p class="patient-id-slot">Primary ID: #PAT-2026-88</p>
+                    <span class="status-pill confirmed" style="margin-top: 6px; font-size: 11px;">Verified Patient • Click to Edit</span>
+                  </div>
+                </div>
+
+                <!-- Physical Bio Matrix 4-Cell Inset Wells -->
+                <div class="bio-matrix-grid">
+                  <div class="bio-cell">
+                    <div class="label">Blood Group</div>
+                    <div class="value" id="bioBlood">O +ve</div>
+                  </div>
+                  <div class="bio-cell">
+                    <div class="label">Age / Gender</div>
+                    <div class="value" id="bioAgeGender">34 / M</div>
+                  </div>
+                  <div class="bio-cell">
+                    <div class="label">Height</div>
+                    <div class="value" id="bioHeight">178 cm</div>
+                  </div>
+                  <div class="bio-cell">
+                    <div class="label">Weight</div>
+                    <div class="value" id="bioWeight">72.4 kg</div>
+                  </div>
+                </div>
+
+                <!-- Real-Time Vitals Dial Meters -->
+                <div class="vitals-meter-group">
+                  <div class="meter-row" onclick="event.stopPropagation(); showToast('Heart Rate: 72 BPM resting (Normal Sinus Rhythm)')">
+                    <div class="meter-label-row">
+                      <span>❤️ Heart Rate</span>
+                      <span>72 BPM (Resting)</span>
+                    </div>
+                    <div class="sunken-track">
+                      <div class="glossy-fill-bar pulse" style="width: 72%;"></div>
+                    </div>
+                  </div>
+
+                  <div class="meter-row" onclick="event.stopPropagation(); showToast('Blood Pressure: 118/78 mmHg (Optimal Range)')">
+                    <div class="meter-label-row">
+                      <span>🩺 Blood Pressure</span>
+                      <span>118 / 78 mmHg</span>
+                    </div>
+                    <div class="sunken-track">
+                      <div class="glossy-fill-bar bp" style="width: 60%;"></div>
+                    </div>
+                  </div>
+
+                  <div class="meter-row" onclick="event.stopPropagation(); showToast('Fasting Glucose: 94 mg/dL (Euglycemic Optimal)')">
+                    <div class="meter-label-row">
+                      <span>🩸 Fasting Blood Glucose</span>
+                      <span>94 mg/dL</span>
+                    </div>
+                    <div class="sunken-track">
+                      <div class="glossy-fill-bar sugar" style="width: 48%;"></div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Health Tips Panel with 3D Medical Illustration -->
+              <section class="health-tips-panel">
+                <div class="health-tip-visual">
+                  <img src="images/health_tip_3d.jpg" alt="3D Heart and Stethoscope Health Tip" width="380" height="160">
+                </div>
+                <div class="status-pill confirmed" style="align-self: flex-start; font-size: 11px;">
+                  💡 Daily Medical Advisory
+                </div>
+                <h4>Cardiovascular Vitality Routine</h4>
+                <p>Maintaining a 30-minute brisk walk daily reduces arterial stiffness by up to 24%. Combine with adequate hydration (2.5L/day) for optimal electrolyte balance before your next lipid screening.</p>
+                <button type="button" class="btn-tactile-secondary" style="align-self: flex-start; font-size: 12.5px; padding: 8px 16px;" onclick="showToast('Advisory saved to your wellness reading library')">
+                  Save to Reading List →
+                </button>
+              </section>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ==================================================================
+             VIEW 2: DEDICATED APPOINTMENTS SECTION
+             ================================================================== -->
+        <div class="dashboard-view" id="view-appointments">
+          <div class="section-hero-header">
+            <div>
+              <h2>📅 Specialist Appointments & Clinical Visits</h2>
+              <p>Manage confirmed appointments, view consultation rooms, or request immediate rescheduling.</p>
+            </div>
+            <button type="button" class="btn-action-teal" onclick="switchView('consultations')">
+              <span>➕</span> Book New Consultation
+            </button>
+          </div>
+
+          <div class="console-panel">
+            <div class="panel-header-row">
+              <div class="panel-title-group">
+                <h3>Scheduled Consultations</h3>
+                <p>All active specialist sessions assigned to your patient file</p>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn-tactile-secondary" style="font-size: 12px; padding: 6px 12px;" onclick="filterApptsByStatus('All')">All</button>
+                <button type="button" class="btn-tactile-secondary" style="font-size: 12px; padding: 6px 12px;" onclick="filterApptsByStatus('Confirmed')">Confirmed</button>
+                <button type="button" class="btn-tactile-secondary" style="font-size: 12px; padding: 6px 12px;" onclick="filterApptsByStatus('Pending')">Pending</button>
+              </div>
+            </div>
+
+            <div class="appointments-stack" id="dedicatedApptsStack">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             VIEW 3: DEDICATED PRESCRIPTIONS SECTION
+             ================================================================== -->
+        <div class="dashboard-view" id="view-prescriptions">
+          <div class="section-hero-header">
+            <div>
+              <h2>💊 Active Prescriptions & Regimen Schedule</h2>
+              <p>Doctor-verified medications, dosage timings, and one-touch pharmacy refill orders.</p>
+            </div>
+            <button type="button" class="btn-tactile-primary" onclick="showToast('Printing official prescription schedule...')">
+              <span>🖨️</span> Print Prescription Guide
+            </button>
+          </div>
+
+          <div class="data-table-card">
+            <table class="skeuo-table">
+              <thead>
+                <tr>
+                  <th>Medication & Strength</th>
+                  <th>Dosage & Frequency</th>
+                  <th>Prescribing Specialist</th>
+                  <th>Refills Remaining</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><b>Atorvastatin 20mg</b><br><span style="font-size:11.5px;color:var(--text-muted);">Oral Tablet</span></td>
+                  <td>1 Tablet at night before sleep</td>
+                  <td>Dr. Asha Rao (Cardiology)</td>
+                  <td><b>3 Refills</b></td>
+                  <td><span class="status-pill confirmed">● Active</span></td>
+                  <td><button type="button" class="btn-action-teal" style="font-size:11px;padding:5px 10px;" onclick="showToast('Refill order sent to Hospital Pharmacy for Atorvastatin 20mg!')">Order Refill</button></td>
+                </tr>
+                <tr>
+                  <td><b>Metformin 500mg</b><br><span style="font-size:11.5px;color:var(--text-muted);">Extended Release</span></td>
+                  <td>1 Tablet twice daily after meals</td>
+                  <td>Dr. Vikram Mehta (Physician)</td>
+                  <td><b>2 Refills</b></td>
+                  <td><span class="status-pill confirmed">● Active</span></td>
+                  <td><button type="button" class="btn-action-teal" style="font-size:11px;padding:5px 10px;" onclick="showToast('Refill order sent to Hospital Pharmacy for Metformin 500mg!')">Order Refill</button></td>
+                </tr>
+                <tr>
+                  <td><b>Multivitamin & Zinc Chelate</b><br><span style="font-size:11.5px;color:var(--text-muted);">Immunity Support</span></td>
+                  <td>1 Capsule every morning with water</td>
+                  <td>Dr. Vikram Mehta (Physician)</td>
+                  <td><b>Unlimited OTC</b></td>
+                  <td><span class="status-pill confirmed">● Active</span></td>
+                  <td><button type="button" class="btn-tactile-secondary" style="font-size:11px;padding:5px 10px;" onclick="showToast('Supplement marked verified.')">Verified</button></td>
+                </tr>
+                <tr>
+                  <td><b>Desloratadine 5mg</b><br><span style="font-size:11.5px;color:var(--text-muted);">Antihistamine</span></td>
+                  <td>1 Tablet SOS during seasonal allergies</td>
+                  <td>Dr. Neha Kapoor (Dermatology)</td>
+                  <td><b>1 Refill</b></td>
+                  <td><span class="status-pill pending">⏳ Review Due</span></td>
+                  <td><button type="button" class="btn-action-teal" style="font-size:11px;padding:5px 10px;" onclick="showToast('Refill request submitted to Dr. Neha Kapoor for authorization.')">Request Auth</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             VIEW 4: DEDICATED LAB REPORTS SECTION
+             ================================================================== -->
+        <div class="dashboard-view" id="view-lab-reports">
+          <div class="section-hero-header">
+            <div>
+              <h2>🔬 Diagnostic Laboratory Reports & Blood Panels</h2>
+              <p>Certified biomarker results published by Central Clinical Pathology with doctor reviews.</p>
+            </div>
+            <button type="button" class="btn-action-teal" onclick="showToast('Downloading complete Pathology Reports archive (ZIP)...')">
+              <span>📥</span> Download All Reports (PDF)
+            </button>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px;">
+            <!-- Report Card 1 -->
+            <div class="console-panel">
+              <div class="panel-header-row">
+                <div>
+                  <h4 style="font-size: 16.5px; font-weight: 800; color: var(--navy-dark);">Comprehensive Metabolic Panel (CBC)</h4>
+                  <span style="font-size: 12px; color: var(--text-muted);">Specimen: Venous Blood • Oct 13, 2026</span>
+                </div>
+                <span class="status-pill confirmed">● Normal</span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13.5px;">
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(160,175,195,0.2); padding-bottom:4px;">
+                  <span>Hemoglobin:</span> <b>14.2 g/dL (Range: 13.5–17.5)</b>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(160,175,195,0.2); padding-bottom:4px;">
+                  <span>Platelet Count:</span> <b>260,000 /mcL (Range: 150k–400k)</b>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(160,175,195,0.2); padding-bottom:4px;">
+                  <span>Total WBC Count:</span> <b>6,800 /mcL (Range: 4.5k–11k)</b>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding-top:4px;">
+                  <span>Erythrocyte Count (RBC):</span> <b>4.85 M/mcL</b>
+                </div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                <span style="font-size:11.5px; color:var(--text-muted);">Reviewed by Dr. Asha Rao</span>
+                <button type="button" class="btn-tactile-secondary" style="font-size:11.5px;" onclick="showToast('Downloading CBC_Report_Verified.pdf')">Download PDF</button>
+              </div>
+            </div>
+
+            <!-- Report Card 2 -->
+            <div class="console-panel">
+              <div class="panel-header-row">
+                <div>
+                  <h4 style="font-size: 16.5px; font-weight: 800; color: var(--navy-dark);">Lipid & Cardiovascular Panel</h4>
+                  <span style="font-size: 12px; color: var(--text-muted);">Specimen: Serum Fasting • Oct 13, 2026</span>
+                </div>
+                <span class="status-pill confirmed">● Desirable</span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13.5px;">
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(160,175,195,0.2); padding-bottom:4px;">
+                  <span>Total Cholesterol:</span> <b>185 mg/dL (&lt;200 Desirable)</b>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(160,175,195,0.2); padding-bottom:4px;">
+                  <span>HDL (Good Cholesterol):</span> <b>54 mg/dL (&gt;40 Optimal)</b>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(160,175,195,0.2); padding-bottom:4px;">
+                  <span>LDL (Bad Cholesterol):</span> <b>102 mg/dL (&lt;100 Borderline)</b>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding-top:4px;">
+                  <span>Serum Triglycerides:</span> <b>130 mg/dL (&lt;150 Normal)</b>
+                </div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                <span style="font-size:11.5px; color:var(--text-muted);">Pathology Lab Ref: #LP-891</span>
+                <button type="button" class="btn-tactile-secondary" style="font-size:11.5px;" onclick="showToast('Downloading Lipid_Profile_Verified.pdf')">Download PDF</button>
+              </div>
+            </div>
+
+            <!-- Report Card 3 -->
+            <div class="console-panel">
+              <div class="panel-header-row">
+                <div>
+                  <h4 style="font-size: 16.5px; font-weight: 800; color: var(--navy-dark);">Glycemic & Renal Profile</h4>
+                  <span style="font-size: 12px; color: var(--text-muted);">Specimen: Fasting Plasma • Sep 28, 2026</span>
+                </div>
+                <span class="status-pill confirmed">● Optimal</span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13.5px;">
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(160,175,195,0.2); padding-bottom:4px;">
+                  <span>Fasting Blood Glucose:</span> <b>94 mg/dL (70–99 Normal)</b>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(160,175,195,0.2); padding-bottom:4px;">
+                  <span>Glycated HbA1c:</span> <b>5.4% (&lt;5.7% Non-Diabetic)</b>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(160,175,195,0.2); padding-bottom:4px;">
+                  <span>Serum Creatinine:</span> <b>0.9 mg/dL (0.7–1.3 Normal)</b>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding-top:4px;">
+                  <span>eGFR (Kidney Function):</span> <b>&gt;90 mL/min (Optimal)</b>
+                </div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                <span style="font-size:11.5px; color:var(--text-muted);">Reviewed by Dr. Vikram Mehta</span>
+                <button type="button" class="btn-tactile-secondary" style="font-size:11.5px;" onclick="showToast('Downloading Renal_Glycemic_Panel.pdf')">Download PDF</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             VIEW 5: DEDICATED MEDICAL RECORDS SECTION
+             ================================================================== -->
+        <div class="dashboard-view" id="view-records">
+          <div class="section-hero-header">
+            <div>
+              <h2>📂 Longitudinal Medical Records & Health Vault</h2>
+              <p>Encrypted clinical records archive including imaging scans, doctor summaries, and uploaded receipts.</p>
+            </div>
+            <button type="button" class="btn-action-teal" onclick="openUploadModal()">
+              <span>📤</span> Upload New Document
+            </button>
+          </div>
+
+          <div class="data-table-card">
+            <table class="skeuo-table">
+              <thead>
+                <tr>
+                  <th>Record Name</th>
+                  <th>Category</th>
+                  <th>Uploaded Date</th>
+                  <th>Issuing Wing / Specialist</th>
+                  <th>Encryption Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="recordsTableBody">
+                <tr>
+                  <td><b>Cardiology Doppler Ultrasound Scan</b></td>
+                  <td>Imaging / DICOM</td>
+                  <td>Oct 10, 2026</td>
+                  <td>Cardiology Wing (Dr. Asha Rao)</td>
+                  <td><span class="status-pill confirmed">🔒 AES-256</span></td>
+                  <td><button type="button" class="btn-tactile-secondary" style="font-size:11px;" onclick="showToast('Downloading Doppler_Imaging_Scan.dicom...')">Download</button></td>
+                </tr>
+                <tr>
+                  <td><b>Annual General Health Checkup Summary</b></td>
+                  <td>Clinical Summary</td>
+                  <td>Sep 15, 2026</td>
+                  <td>Executive Health Clinic</td>
+                  <td><span class="status-pill confirmed">🔒 AES-256</span></td>
+                  <td><button type="button" class="btn-tactile-secondary" style="font-size:11px;" onclick="showToast('Downloading Health_Checkup_Summary.pdf...')">Download</button></td>
+                </tr>
+                <tr>
+                  <td><b>COVID-19 & Flu Booster Vaccination Certificate</b></td>
+                  <td>Immunization</td>
+                  <td>Jan 24, 2026</td>
+                  <td>National Immunization Registry</td>
+                  <td><span class="status-pill confirmed">🔒 Verified</span></td>
+                  <td><button type="button" class="btn-tactile-secondary" style="font-size:11px;" onclick="showToast('Downloading Vaccination_Certificate.pdf...')">Download</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             VIEW 6: DEDICATED CONSULTATIONS / BOOKING SECTION
+             ================================================================== -->
+        <div class="dashboard-view" id="view-consultations">
+          <div class="section-hero-header">
+            <div>
+              <h2>🩺 Schedule Specialist Doctor Consultation</h2>
+              <p>Choose an expert doctor, select your preferred OPD timing slot, and receive instant confirmation.</p>
+            </div>
+            <button type="button" class="btn-tactile-secondary" onclick="switchView('appointments')">
+              <span>📅</span> View My Scheduled Appointments
+            </button>
+          </div>
+
+          <div class="console-panel" style="max-width: 820px; margin: 0 auto;">
+            <form onsubmit="handleBookAppointmentSubmit(event)">
+              <div class="modal-field">
+                <label>1. Select Consulting Specialist</label>
+                <select class="modal-select" id="consultDoctorSelect" required>
+                  <option value="Dr. Asha Rao|Cardiology">Dr. Asha Rao — Senior Cardiologist (Main Wing Room 304)</option>
+                  <option value="Dr. Vikram Mehta|General Physician">Dr. Vikram Mehta — Senior Physician (OPD Pavilion B)</option>
+                  <option value="Dr. Neha Kapoor|Dermatology">Dr. Neha Kapoor — Dermatologist & Wellness (Suite 510)</option>
+                  <option value="Dr. Rohan Iyer|Orthopedics">Dr. Rohan Iyer — Orthopedic Specialist (Block C Room 108)</option>
+                </select>
+              </div>
+
+              <div class="modal-field" style="margin-top: 16px;">
+                <label>2. Preferred Consultation Date</label>
+                <input type="date" class="modal-input" id="consultDateInput" required>
+              </div>
+
+              <div class="modal-field" style="margin-top: 16px;">
+                <label>3. Select OPD Available Time Slot</label>
+                <div class="slot-pills-row" id="consultSlotsContainer">
+                  <button type="button" class="slot-pill-btn active" onclick="selectSlotPill(this)">09:30 AM</button>
+                  <button type="button" class="slot-pill-btn" onclick="selectSlotPill(this)">10:30 AM</button>
+                  <button type="button" class="slot-pill-btn" onclick="selectSlotPill(this)">11:15 AM</button>
+                  <button type="button" class="slot-pill-btn" onclick="selectSlotPill(this)">02:00 PM</button>
+                  <button type="button" class="slot-pill-btn" onclick="selectSlotPill(this)">03:30 PM</button>
+                  <button type="button" class="slot-pill-btn" onclick="selectSlotPill(this)">04:15 PM</button>
+                </div>
+              </div>
+
+              <div class="modal-field" style="margin-top: 16px;">
+                <label>4. Consultation Mode</label>
+                <select class="modal-select" id="consultModeSelect">
+                  <option value="Hospital In-Person OPD">In-Person OPD Clinic Visit (Hospital)</option>
+                  <option value="Secure Video Tele-Consultation">Video Tele-Consultation (Online)</option>
+                </select>
+              </div>
+
+              <div class="modal-field" style="margin-top: 16px;">
+                <label>5. Clinical Reason or Symptoms</label>
+                <textarea class="modal-textarea" rows="3" id="consultReasonInput" placeholder="Briefly describe your symptoms or reason for visit (e.g., blood pressure follow-up, mild fever)..."></textarea>
+              </div>
+
+              <div style="display: flex; gap: 14px; margin-top: 24px;">
+                <button type="submit" class="btn-action-teal" style="flex: 1; justify-content: center; padding: 14px; font-size: 15px;">
+                  Confirm & Reserve Appointment
+                </button>
+                <button type="button" class="btn-tactile-secondary" onclick="switchView('overview')">
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ======================================================================
+       MODAL 1: EDIT PATIENT PROFILE & PICTURE MODAL
+       ====================================================================== -->
+  <div class="skeuo-modal-backdrop" id="modalProfile">
+    <div class="skeuo-modal-card">
+      <div class="modal-header-row">
+        <h3>👤 Edit Patient Profile & Picture</h3>
+        <button type="button" class="btn-close-modal" onclick="closeModal('modalProfile')">✕</button>
+      </div>
+
+      <form onsubmit="handleProfileSubmit(event)">
+        <!-- Photo Upload Preview Row -->
+        <div class="profile-avatar-row">
+          <div class="avatar-preview-box" id="modalAvatarPreview">
+            <span id="modalAvatarText">PT</span>
+          </div>
+          <div style="flex: 1;">
+            <b style="color: var(--navy-dark); font-size: 14.5px; display: block; margin-bottom: 4px;">Profile Photo</b>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Upload JPG or PNG image to update your console avatar.</p>
+            <input type="file" id="profilePicInput" accept="image/*" class="modal-input" style="padding: 6px 10px; font-size: 12px;" onchange="handleProfilePhotoChange(event)">
+          </div>
+        </div>
+
+        <div class="modal-field">
+          <label>Full Name</label>
+          <input type="text" class="modal-input" id="profNameInput" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="modal-field">
+            <label>Email Address</label>
+            <input type="email" class="modal-input" id="profEmailInput" required>
+          </div>
+          <div class="modal-field">
+            <label>Phone Number</label>
+            <input type="tel" class="modal-input" id="profPhoneInput">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="modal-field">
+            <label>Blood Group</label>
+            <select class="modal-select" id="profBloodInput">
+              <option value="O +ve">O +ve</option>
+              <option value="A +ve">A +ve</option>
+              <option value="B +ve">B +ve</option>
+              <option value="AB +ve">AB +ve</option>
+              <option value="O -ve">O -ve</option>
+              <option value="A -ve">A -ve</option>
+              <option value="B -ve">B -ve</option>
+              <option value="AB -ve">AB -ve</option>
+            </select>
+          </div>
+          <div class="modal-field">
+            <label>Age</label>
+            <input type="number" class="modal-input" id="profAgeInput" min="1" max="120">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="modal-field">
+            <label>Height (cm)</label>
+            <input type="text" class="modal-input" id="profHeightInput" placeholder="178 cm">
+          </div>
+          <div class="modal-field">
+            <label>Weight (kg)</label>
+            <input type="text" class="modal-input" id="profWeightInput" placeholder="72.4 kg">
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 14px;">
+          <button type="submit" class="btn-action-teal" style="flex: 1; justify-content: center; padding: 12px;">Save Profile Changes</button>
+          <button type="button" class="btn-tactile-secondary" onclick="closeModal('modalProfile')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 2: UPLOAD HEALTH RECORD MODAL
+       ====================================================================== -->
+  <div class="skeuo-modal-backdrop" id="modalUpload">
+    <div class="skeuo-modal-card">
+      <div class="modal-header-row">
+        <h3>📤 Upload Medical Record</h3>
+        <button type="button" class="btn-close-modal" onclick="closeModal('modalUpload')">✕</button>
+      </div>
+      <form onsubmit="handleUploadSubmit(event)">
+        <div class="modal-field">
+          <label>Document Title</label>
+          <input type="text" class="modal-input" id="uploadTitle" placeholder="e.g. Chest X-Ray Imaging, Pharmacy Bill" required>
+        </div>
+        <div class="modal-field">
+          <label>Record Classification</label>
+          <select class="modal-select" id="uploadCategory">
+            <option value="Prescription">Prescription</option>
+            <option value="Diagnostic Lab Report">Diagnostic Lab Report</option>
+            <option value="Imaging / X-Ray / MRI">Imaging / X-Ray / MRI</option>
+            <option value="Discharge Summary">Discharge Summary</option>
+            <option value="Vaccination Certificate">Vaccination Certificate</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label>Select Document File</label>
+          <input type="file" class="modal-input" id="uploadFileInput" accept=".pdf,.jpg,.jpeg,.png,.dicom" required>
+        </div>
+        <div style="background: var(--surface-sunken); padding: 12px; border-radius: 10px; font-size: 12px; color: var(--text-muted); box-shadow: var(--skeuo-sunken-sm);">
+          🔒 All uploaded documents are encrypted with AES-256 and stored in your Swasthya Mitra health vault.
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 12px;">
+          <button type="submit" class="btn-action-teal" style="flex: 1; justify-content: center;">Upload & Encrypt</button>
+          <button type="button" class="btn-tactile-secondary" onclick="closeModal('modalUpload')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 3: APPOINTMENT DETAILS & RESCHEDULE MODAL
+       ====================================================================== -->
+  <div class="skeuo-modal-backdrop" id="modalApptDetails">
+    <div class="skeuo-modal-card">
+      <div class="modal-header-row">
+        <h3>📋 Consultation Specifications</h3>
+        <button type="button" class="btn-close-modal" onclick="closeModal('modalApptDetails')">✕</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="bio-cell" style="text-align: left; padding: 18px;">
+          <h4 id="detailDocName" style="color: var(--navy-dark); font-size: 18px; margin-bottom: 4px;">Dr. Asha Rao</h4>
+          <span id="detailDocSpec" style="color: var(--teal-accent); font-weight: 700;">Senior Cardiologist</span>
+          <div style="margin-top: 12px; font-size: 13.5px; display: flex; flex-direction: column; gap: 8px;">
+            <div>📅 <b>Scheduled Date:</b> <span id="detailDate">Oct 16, 2026</span></div>
+            <div>⏰ <b>OPD Window:</b> <span id="detailTime">10:30 AM – 11:15 AM</span></div>
+            <div>🏥 <b>Clinic Venue:</b> <span id="detailVenue">Room 304, Main Medical Wing</span></div>
+            <div>📑 <b>Status:</b> <span class="status-pill confirmed" id="detailStatus">● Confirmed</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; margin-top: 12px;">
+        <button type="button" class="btn-tactile-primary" style="flex: 1; justify-content: center;" onclick="showToast('Hospital navigation route sent via SMS'); closeModal('modalApptDetails')">Get Clinic Route</button>
+        <button type="button" class="btn-tactile-secondary" onclick="closeModal('modalApptDetails'); switchView('consultations')">Reschedule</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tactile Toast Notification -->
+  <div class="tactile-toast" id="tactileToast">
+    <span>✔</span>
+    <span id="toastMsg">Notification message</span>
+  </div>
+
+  <!-- ======================================================================
+       TACTILE APPLICATION SCRIPT & STATE ENGINE
+       ====================================================================== -->
+  <script>
+    // 1. Initial State Seed
+    const DEFAULT_PATIENT = {
+      id: 88,
+      name: 'Rahul Sharma',
+      email: 'rahul@gmail.com',
+      phone: '+91 98765 43210',
+      blood: 'O +ve',
+      age: 34,
+      gender: 'M',
+      height: '178 cm',
+      weight: '72.4 kg',
+      photo: '' // Data URL if uploaded
+    };
+
+    let activeAppointments = [
+      {
+        id: 101,
+        doc: 'Dr. Asha Rao',
+        spec: 'Senior Cardiologist',
+        date: '2026-10-16',
+        displayDate: 'Oct 16',
+        month: 'Oct',
+        day: '16',
+        time: '10:30 AM – 11:15 AM',
+        venue: 'Room 304, Main Medical Wing',
+        status: 'Confirmed'
+      },
+      {
+        id: 102,
+        doc: 'Dr. Vikram Mehta',
+        spec: 'General Physician',
+        date: '2026-10-21',
+        displayDate: 'Oct 21',
+        month: 'Oct',
+        day: '21',
+        time: '02:00 PM – 02:40 PM',
+        venue: 'Room 102, OPD Pavilion B',
+        status: 'Confirmed'
+      },
+      {
+        id: 103,
+        doc: 'Dr. Neha Kapoor',
+        spec: 'Dermatologist',
+        date: '2026-11-04',
+        displayDate: 'Nov 04',
+        month: 'Nov',
+        day: '04',
+        time: '11:00 AM – 11:30 AM',
+        venue: 'Suite 510, Skin & Wellness Wing',
+        status: 'Pending'
+      }
+    ];
+
+    let currentPatient = DEFAULT_PATIENT;
+    let selectedSlot = '09:30 AM';
+    let currentPhotoDataUrl = '';
+
+    // Initialize from LocalStorage
+    try {
+      const savedUser = JSON.parse(localStorage.getItem('aura_health_user'));
+      if (savedUser && savedUser.name) {
+        currentPatient = { ...DEFAULT_PATIENT, ...savedUser };
+      }
+      const savedAppts = JSON.parse(localStorage.getItem('patient_appts_data'));
+      if (savedAppts && Array.isArray(savedAppts) && savedAppts.length) {
+        activeAppointments = savedAppts;
+      }
+    } catch(e) {}
+
+    // 2. View Switching Controller
+    function switchView(viewId) {
+      // Hide all views
+      document.querySelectorAll('.dashboard-view').forEach(v => v.classList.remove('active'));
+      
+      // Show selected view
+      const target = document.getElementById('view-' + viewId);
+      if (target) {
+        target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Update active nav-link
+      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+      const activeNav = document.getElementById('nav-' + viewId);
+      if (activeNav) activeNav.classList.add('active');
+
+      // Sync views
+      if (viewId === 'appointments') {
+        renderDedicatedAppointments();
+      } else if (viewId === 'consultations') {
+        initConsultationDate();
+      }
+
+      showToast(`Switched to ${viewId.replace('-', ' ').toUpperCase()} section`);
+    }
+
+    // 3. Render Appointments Stacks
+    function renderOverviewAppointments() {
+      const stack = document.getElementById('overviewApptsStack');
+      if (!stack) return;
+      stack.innerHTML = activeAppointments.map(a => `
+        <div class="appt-tactile-card" data-search="${a.doc} ${a.spec}">
+          <div class="date-capsule">
+            <div class="month">${a.month}</div>
+            <div class="day">${a.day}</div>
+          </div>
+          <div class="appt-details">
+            <h4>${a.doc}</h4>
+            <span class="specialty">${a.spec} • ${a.venue}</span>
+            <div class="appt-meta-specs">
+              <span>⏰ ${a.time}</span>
+            </div>
+          </div>
+          <div class="appt-actions-slot">
+            <span class="status-pill ${a.status === 'Confirmed' ? 'confirmed' : 'pending'}">● ${a.status}</span>
+            <button type="button" class="btn-tactile-secondary" style="padding: 5px 10px; font-size: 11px;" onclick="openApptDetailsModal('${a.doc}', '${a.spec}', '${a.displayDate}', '${a.time}', '${a.venue}', '${a.status}')">Details</button>
+          </div>
+        </div>
+      `).join('');
+
+      // Update stat counter
+      const statCount = document.getElementById('stat-appt-count');
+      if (statCount) statCount.textContent = String(activeAppointments.length).padStart(2, '0');
+      const badge = document.getElementById('sidebarApptBadge');
+      if (badge) badge.textContent = `${activeAppointments.length} Active`;
+      const welcomeBadge = document.getElementById('welcomeApptCount');
+      if (welcomeBadge) welcomeBadge.textContent = `${activeAppointments.length} upcoming consultation${activeAppointments.length===1?'':'s'}`;
+    }
+
+    function renderDedicatedAppointments(filter = 'All') {
+      const stack = document.getElementById('dedicatedApptsStack');
+      if (!stack) return;
+
+      const list = filter === 'All' ? activeAppointments : activeAppointments.filter(a => a.status === filter);
+      if (!list.length) {
+        stack.innerHTML = `<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:14px;">No ${filter} appointments found. Click 'Book New Consultation' to schedule one.</div>`;
+        return;
+      }
+
+      stack.innerHTML = list.map(a => `
+        <div class="appt-tactile-card" data-search="${a.doc} ${a.spec}">
+          <div class="date-capsule">
+            <div class="month">${a.month}</div>
+            <div class="day">${a.day}</div>
+          </div>
+          <div class="appt-details">
+            <h4>${a.doc}</h4>
+            <span class="specialty">${a.spec} • Consultation</span>
+            <div class="appt-meta-specs">
+              <span>⏰ ${a.time}</span>
+              <span>🏥 ${a.venue}</span>
+            </div>
+          </div>
+          <div class="appt-actions-slot" style="gap: 8px;">
+            <span class="status-pill ${a.status === 'Confirmed' ? 'confirmed' : 'pending'}">● ${a.status}</span>
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn-tactile-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="openApptDetailsModal('${a.doc}', '${a.spec}', '${a.displayDate}', '${a.time}', '${a.venue}', '${a.status}')">Details</button>
+              <button type="button" class="btn-tactile-secondary" style="padding: 4px 8px; font-size: 11px; color: var(--ruby-danger);" onclick="cancelAppointment(${a.id})">Cancel</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterApptsByStatus(status) {
+      renderDedicatedAppointments(status);
+      showToast(`Showing ${status} appointments`);
+    }
+
+    function cancelAppointment(id) {
+      if (!confirm('Are you sure you want to cancel this appointment?')) return;
+      activeAppointments = activeAppointments.filter(a => a.id !== id);
+      try { localStorage.setItem('patient_appts_data', JSON.stringify(activeAppointments)); } catch(e){}
+      renderOverviewAppointments();
+      renderDedicatedAppointments();
+      showToast('Appointment cancelled successfully.');
+    }
+
+    // 4. Booking Consultation Controller
+    function initConsultationDate() {
+      const input = document.getElementById('consultDateInput');
+      if (input && !input.value) {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        input.value = tomorrow.toISOString().slice(0, 10);
+      }
+    }
+
+    function selectSlotPill(btn) {
+      document.querySelectorAll('.slot-pill-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedSlot = btn.textContent.trim();
+    }
+
+    function handleBookAppointmentSubmit(e) {
+      e.preventDefault();
+      const docVal = document.getElementById('consultDoctorSelect').value;
+      const [docName, docSpec] = docVal.split('|');
+      const dateVal = document.getElementById('consultDateInput').value;
+      const mode = document.getElementById('consultModeSelect').value;
+
+      const d = new Date(dateVal + 'T00:00:00');
+      const monthStr = isNaN(d.getTime()) ? 'Nov' : d.toLocaleString('en', { month: 'short' });
+      const dayStr = isNaN(d.getTime()) ? '15' : String(d.getDate()).padStart(2, '0');
+
+      const newAppt = {
+        id: Date.now(),
+        doc: docName,
+        spec: docSpec,
+        date: dateVal,
+        displayDate: `${monthStr} ${dayStr}`,
+        month: monthStr,
+        day: dayStr,
+        time: selectedSlot,
+        venue: mode.includes('Video') ? 'Encrypted Video Suite (Online)' : 'Main Medical Wing Room 304',
+        status: 'Confirmed'
+      };
+
+      activeAppointments.unshift(newAppt);
+      try { localStorage.setItem('patient_appts_data', JSON.stringify(activeAppointments)); } catch(e){}
+
+      renderOverviewAppointments();
+      switchView('appointments');
+      showToast(`Appointment confirmed with ${docName} for ${monthStr} ${dayStr} at ${selectedSlot}!`);
+    }
+
+    // 5. Notification Popover Controller (Anchored Below Bell)
+    function toggleNotificationPopover(e) {
+      if (e) e.stopPropagation();
+      const pop = document.getElementById('notificationPopover');
+      if (pop) {
+        pop.classList.toggle('active');
+      }
+    }
+
+    function clearNotifications() {
+      const pop = document.getElementById('notificationPopover');
+      if (pop) {
+        pop.innerHTML = '<div style="padding: 18px; text-align: center; color: var(--text-muted); font-size: 13px;">No unread notifications at this time.</div>';
+      }
+      const led = document.getElementById('notif-led');
+      if (led) led.style.display = 'none';
+      showToast('All notifications cleared.');
+    }
+
+    // Close notifications popover on outside click
+    document.addEventListener('click', (e) => {
+      const pop = document.getElementById('notificationPopover');
+      if (pop && pop.classList.contains('active') && !pop.contains(e.target) && !e.target.closest('#btnNotification')) {
+        pop.classList.remove('active');
+      }
+    });
+
+    // 6. Profile & Picture Editing Controller
+    function openProfileModal() {
+      document.getElementById('profNameInput').value = currentPatient.name || '';
+      document.getElementById('profEmailInput').value = currentPatient.email || '';
+      document.getElementById('profPhoneInput').value = currentPatient.phone || '';
+      document.getElementById('profBloodInput').value = currentPatient.blood || 'O +ve';
+      document.getElementById('profAgeInput').value = currentPatient.age || 34;
+      document.getElementById('profHeightInput').value = currentPatient.height || '178 cm';
+      document.getElementById('profWeightInput').value = currentPatient.weight || '72.4 kg';
+      
+      currentPhotoDataUrl = currentPatient.photo || '';
+      updateModalAvatarPreview();
+      openModal('modalProfile');
+    }
+
+    function handleProfilePhotoChange(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        currentPhotoDataUrl = evt.target.result;
+        updateModalAvatarPreview();
+        showToast('Photo selected! Click "Save Profile Changes" to apply.');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateModalAvatarPreview() {
+      const previewBox = document.getElementById('modalAvatarPreview');
+      if (!previewBox) return;
+      if (currentPhotoDataUrl) {
+        previewBox.innerHTML = `<img src="${currentPhotoDataUrl}" alt="Profile Preview">`;
+      } else {
+        const initials = (currentPatient.name || 'PT').split(' ').map(n=>n[0]).join('').slice(0, 2).toUpperCase();
+        previewBox.innerHTML = `<span id="modalAvatarText">${initials}</span>`;
+      }
+    }
+
+    function handleProfileSubmit(e) {
+      e.preventDefault();
+      currentPatient.name = document.getElementById('profNameInput').value.trim();
+      currentPatient.email = document.getElementById('profEmailInput').value.trim();
+      currentPatient.phone = document.getElementById('profPhoneInput').value.trim();
+      currentPatient.blood = document.getElementById('profBloodInput').value;
+      currentPatient.age = parseInt(document.getElementById('profAgeInput').value) || 34;
+      currentPatient.height = document.getElementById('profHeightInput').value.trim();
+      currentPatient.weight = document.getElementById('profWeightInput').value.trim();
+      if (currentPhotoDataUrl) {
+        currentPatient.photo = currentPhotoDataUrl;
+      }
+
+      // Persist in localStorage
+      try {
+        localStorage.setItem('aura_health_user', JSON.stringify(currentPatient));
+      } catch(e) {}
+
+      // Update DOM elements on page
+      hydratePatientUI();
+      closeModal('modalProfile');
+      showToast('Profile and Picture updated successfully!');
+    }
+
+    function hydratePatientUI() {
+      // Names
+      document.querySelectorAll('.patient-name-slot').forEach(el => el.textContent = currentPatient.name);
+      document.querySelectorAll('.patient-id-slot').forEach(el => el.textContent = 'Primary ID: #PAT-2026-' + (currentPatient.id || '88'));
+
+      // Bio Matrix
+      const bBlood = document.getElementById('bioBlood');
+      if (bBlood) bBlood.textContent = currentPatient.blood;
+      const bAgeGender = document.getElementById('bioAgeGender');
+      if (bAgeGender) bAgeGender.textContent = `${currentPatient.age} / ${currentPatient.gender || 'M'}`;
+      const bHeight = document.getElementById('bioHeight');
+      if (bHeight) bHeight.textContent = currentPatient.height;
+      const bWeight = document.getElementById('bioWeight');
+      if (bWeight) bWeight.textContent = currentPatient.weight;
+
+      // Avatars (with picture support)
+      const topFrame = document.getElementById('topbarAvatarFrame');
+      const dossierFrame = document.getElementById('dossierAvatarFrame');
+      const initials = (currentPatient.name || 'PT').split(' ').map(n=>n[0]).join('').slice(0, 2).toUpperCase();
+
+      if (currentPatient.photo) {
+        if (topFrame) topFrame.innerHTML = `<img src="${currentPatient.photo}" alt="${currentPatient.name}">`;
+        if (dossierFrame) dossierFrame.innerHTML = `<img src="${currentPatient.photo}" alt="${currentPatient.name}">`;
+      } else {
+        if (topFrame) topFrame.innerHTML = `<span>${initials}</span>`;
+        if (dossierFrame) dossierFrame.innerHTML = `<span>${initials}</span>`;
+      }
+    }
+
+    // 7. Modals Open/Close Helper
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('active');
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('active');
+    }
+
+    function openUploadModal() {
+      openModal('modalUpload');
+    }
+
+    function handleUploadSubmit(e) {
+      e.preventDefault();
+      const title = document.getElementById('uploadTitle').value.trim();
+      const cat = document.getElementById('uploadCategory').value;
+
+      // Add to records table
+      const tbody = document.getElementById('recordsTableBody');
+      if (tbody) {
+        const tr = document.createElement('tr');
+        const todayStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        tr.innerHTML = `
+          <td><b>${title}</b></td>
+          <td>${cat}</td>
+          <td>${todayStr}</td>
+          <td>Patient Health Vault Upload</td>
+          <td><span class="status-pill confirmed">🔒 AES-256</span></td>
+          <td><button type="button" class="btn-tactile-secondary" style="font-size:11px;" onclick="showToast('Downloading ${title}...')">Download</button></td>
+        `;
+        tbody.insertBefore(tr, tbody.firstChild);
+      }
+
+      closeModal('modalUpload');
+      showToast(`Document "${title}" uploaded and encrypted in vault!`);
+      switchView('records');
+    }
+
+    function openApptDetailsModal(doc, spec, date, time, venue, status) {
+      document.getElementById('detailDocName').textContent = doc;
+      document.getElementById('detailDocSpec').textContent = spec;
+      document.getElementById('detailDate').textContent = date;
+      document.getElementById('detailTime').textContent = time;
+      document.getElementById('detailVenue').textContent = venue;
+      document.getElementById('detailStatus').textContent = '● ' + status;
+      openModal('modalApptDetails');
+    }
+
+    // 8. Live Search Filter
+    function handleSearchFilter(q) {
+      const query = q.toLowerCase().trim();
+      document.querySelectorAll('.appt-tactile-card, .timeline-item, .skeuo-table tbody tr').forEach(el => {
+        const text = el.textContent.toLowerCase();
+        if (!query || text.includes(query)) {
+          el.style.display = '';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+    }
+
+    // 9. Toast Notification Trigger
+    function showToast(msg) {
+      const toast = document.getElementById('tactileToast');
+      const toastMsg = document.getElementById('toastMsg');
+      if (!toast || !toastMsg) return;
+      toastMsg.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3200);
+    }
+
+    function handleLogout() {
+      try { localStorage.removeItem('aura_health_user'); } catch(e){}
+    }
+
+    // On Load Initialization
+    hydratePatientUI();
+    renderOverviewAppointments();
+    initConsultationDate();
+  </script>
+</body>
+</html>
