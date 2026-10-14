@@ -155,7 +155,7 @@ public synchronized Optional<Appointment> book(int patientId, int doctorId, Stri
 |---|---|---|---|
 | `/api/auth/login` | POST | Public | Authenticates patient or doctor |
 | `/api/auth/register` | POST | Public | Registers a new patient |
-| `/api/auth/admin` | POST | Public | Authenticates root admin (`Sunny` / `Sunny123`) |
+| `/api/auth/admin` | POST | Public | Authenticates root admin (`Sunny123` / `Sunny_babu`) |
 | `/api/auth/google` | POST | Public | Firebase Google ID-Token authentication |
 | `/api/auth/logout` | POST | All | Invalidates HTTP session |
 | `/api/auth/me` | GET | All | Returns current active user profile |

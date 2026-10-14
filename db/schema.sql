@@ -61,4 +61,4 @@ CREATE TABLE IF NOT EXISTS settings (
 );
 INSERT IGNORE INTO settings (k, v) VALUES
   ('clinic_name','AuraHealth Clinic'), ('slot_minutes','30'), ('booking_enabled','true');
--- The default admin (Sunny / Sunny123) is created automatically on first start by AppStartup.
+-- The default admin (Sunny123 / Sunny_babu) is created automatically on first start by AppStartup.

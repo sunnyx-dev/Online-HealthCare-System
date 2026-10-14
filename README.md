@@ -11,7 +11,7 @@ Java 17 · Jakarta Servlet 6 (Tomcat 10.1+) · JDBC (MySQL 8) · Gson · Firebas
    For Google login also set `GOOGLE_APPLICATION_CREDENTIALS` to your Firebase service-account JSON.
 3. Build: `mvn clean package`
 4. Copy `target/aurahealth.war` into Tomcat's `webapps/` and start Tomcat.
-5. Open http://localhost:8080/aurahealth/ . The default admin Sunny / Sunny123 is created on first start.
+5. Open http://localhost:8080/aurahealth/ . The default admin Sunny123 / Sunny_babu is created on first start.
 
 ## API (all JSON, cookie session)
 | Method + path | Who | What |

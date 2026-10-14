@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>AuraHealth | Smart Healthcare & Doctor Appointment System</title>
-  <meta name="description" content="AuraHealth - Smart Healthcare & Doctor Appointment System featuring real-time specialist booking, longitudinal health records, role-based dashboards, and 24/7 AI Health Assistant.">
+  <title>Swasthya Mitra | Smart Healthcare & Doctor Appointment System</title>
+  <meta name="description" content="Swasthya Mitra - Smart Healthcare & Doctor Appointment System featuring real-time specialist booking, longitudinal health records, role-based dashboards, and 24/7 AI Health Assistant.">
+  <link rel="icon" type="image/png" href="logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
@@ -115,15 +116,16 @@
       display: flex; align-items: center; justify-content: space-between;
     }
     .logo {
-      display: flex; align-items: center; gap: 10px; font-family: 'Space Grotesk', sans-serif;
+      display: flex; align-items: center; gap: 12px; font-family: 'Space Grotesk', sans-serif;
       font-size: 24px; font-weight: 700; color: var(--text); text-decoration: none;
     }
-    .logo-badge {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white; width: 38px; height: 38px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center; font-size: 20px;
+    .logo-img {
+      width: 40px; height: 40px; border-radius: 10px; object-fit: cover;
       box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35);
+      border: 1.5px solid rgba(13, 148, 136, 0.3);
+      transition: transform 0.25s ease;
     }
+    .logo:hover .logo-img { transform: scale(1.08); }
     .logo span { color: var(--primary); }
     .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
     .nav-links a {
@@ -320,10 +322,6 @@
     }
     .modal-switch u { color: var(--primary); cursor: pointer; font-weight: 700; text-decoration: none; }
     .modal-switch u:hover { text-decoration: underline; }
-    .doctor-login-hint {
-      margin-top: 14px; padding: 10px; background: var(--bg);
-      border-radius: 8px; font-size: 12px; color: var(--text-muted); text-align: center;
-    }
 
     /* Dashboard Layout */
     #dashboard-app { display: none; min-height: 100vh; }
@@ -474,8 +472,8 @@
     <header>
       <div class="nav-container">
         <a href="#home" class="logo">
-          <div class="logo-badge">🩺</div>
-          <div>Aura<span>Health</span></div>
+          <img src="logo.png" alt="Swasthya Mitra Logo" class="logo-img">
+          <div>Swasthya<span>Mitra</span></div>
         </a>
         <ul class="nav-links">
           <li><a href="#home" class="active">Home</a></li>
@@ -542,7 +540,7 @@
 
     <footer>
       <div class="container">
-        <p><b>AuraHealth</b> · Next-Gen Smart Healthcare & Hospital Management Platform.</p>
+        <p><b>Swasthya Mitra</b> · Next-Gen Smart Healthcare & Hospital Management Platform.</p>
         <p style="margin-top: 6px; font-size: 13px;">Providing compassionate patient care, verified doctor consultations, and 24/7 AI-assisted health guidance.</p>
       </div>
     </footer>
@@ -567,21 +565,21 @@
           <div id="registerFields" style="display: none;">
             <div class="form-group">
               <label>Full Name</label>
-              <input type="text" class="form-input" id="regName" placeholder="Enter your full name">
+              <input type="text" class="form-input" id="regName" placeholder="Enter your full name" autocomplete="off">
             </div>
             <div class="form-group">
               <label>Phone Number</label>
-              <input type="tel" class="form-input" id="regPhone" placeholder="+91 9876543210">
+              <input type="tel" class="form-input" id="regPhone" placeholder="+91 9876543210" autocomplete="off">
             </div>
           </div>
 
           <div class="form-group">
             <label>Email Address</label>
-            <input type="email" class="form-input" id="patientEmail" placeholder="name@example.com" autocomplete="email">
+            <input type="email" class="form-input" id="patientEmail" placeholder="name@example.com" autocomplete="off">
           </div>
           <div class="form-group">
             <label>Password</label>
-            <input type="password" class="form-input" id="patientPass" placeholder="Enter your password" autocomplete="current-password">
+            <input type="password" class="form-input" id="patientPass" placeholder="Enter your password" autocomplete="new-password">
           </div>
 
           <button class="btn btn-primary" style="width: 100%; margin-top: 8px;" id="patientSubmitBtn" onclick="handlePatientAuth()">Log In</button>
@@ -595,9 +593,6 @@
             New patient? <u onclick="toggleRegisterMode(true)">Register an account</u>
           </div>
 
-          <div class="doctor-login-hint">
-            👨‍⚕️ <b>Doctors:</b> Log in here using the credentials sent by Admin. You will be automatically redirected to the Doctor Dashboard.
-          </div>
         </div>
 
         <!-- BACK FACE: ADMIN LOGIN (NO REGISTER OPTION) -->
@@ -607,18 +602,14 @@
 
           <div class="form-group">
             <label>Admin ID</label>
-            <input type="text" class="form-input" id="adminId" value="Sunny" placeholder="Default: Sunny">
+            <input type="text" class="form-input" id="adminId" placeholder="Enter Admin ID" autocomplete="off">
           </div>
           <div class="form-group">
             <label>Password</label>
-            <input type="password" class="form-input" id="adminPass" value="Sunny123" placeholder="Default: Sunny123">
+            <input type="password" class="form-input" id="adminPass" placeholder="Enter Password" autocomplete="new-password">
           </div>
 
           <button class="btn btn-primary" style="width: 100%; margin-top: 14px;" onclick="handleAdminAuth()">Log In as Administrator</button>
-
-          <div style="margin-top: 24px; padding: 12px; background: var(--bg); border-radius: 10px; font-size: 13px; color: var(--text-muted); text-align: center;">
-            🔒 <i>Admin accounts are restricted. No self-registration allowed. Default credentials: ID <b>Sunny</b>, Password <b>Sunny123</b>.</i>
-          </div>
         </div>
       </div>
     </div>
@@ -629,10 +620,14 @@
   <!-- ========================================== -->
   <div id="dashboard-app">
     <aside class="sidebar">
+      <div style="display: flex; align-items: center; gap: 10px; padding: 4px 6px 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px;">
+        <img src="logo.png" alt="Swasthya Mitra Logo" style="width: 36px; height: 36px; border-radius: 9px; object-fit: cover; box-shadow: 0 2px 8px rgba(13,148,136,0.3);">
+        <span style="font-family: 'Space Grotesk', sans-serif; font-size: 19px; font-weight: 700; color: var(--text);">Swasthya<span style="color: var(--primary);">Mitra</span></span>
+      </div>
       <div class="sidebar-user">
         <div class="sidebar-user-avatar" id="sidebarAvatar">A</div>
         <div class="sidebar-user-info">
-          <b id="sidebarName">Sunny</b>
+          <b id="sidebarName">Admin</b>
           <span id="sidebarRole">Admin</span>
         </div>
       </div>
@@ -676,8 +671,8 @@
 
     // Database / Store Seed
     const SEED_DATA = {
-      admin: { id: 'Sunny', pass: 'Sunny123' },
-      settings: { clinic_name: 'AuraHealth Specialty Hospital', slot: 30, booking: true },
+      admin: { id: 'Sunny123', pass: 'Sunny_babu' },
+      settings: { clinic_name: 'Swasthya Mitra Specialty Hospital', slot: 30, booking: true },
       users: [
         { id: 1, name: 'Dr. Asha Rao', email: 'asha@aura.health', pass: 'Doc@101', role: 'doctor', spec: 'Cardiology', days: [1,2,3,4,5], start: '09:00', end: '16:00' },
         { id: 2, name: 'Dr. Vikram Mehta', email: 'vikram@aura.health', pass: 'Doc@102', role: 'doctor', spec: 'General Physician', days: [1,2,3,4,5,6], start: '09:00', end: '17:00' },
@@ -692,7 +687,14 @@
         { id: 1, pid: 10, did: 2, date: new Date().toISOString().slice(0,10), text: 'Prescribed Paracetamol 650mg TDS, warm fluids, adequate rest.' }
       ],
       reviews: [
-        { id: 1, did: 2, pid: 10, stars: 5, comment: 'Dr. Vikram is very attentive and explains everything in Hindi clearly.' }
+        { id: 1, did: 2, pid: 10, stars: 5, comment: 'Dr. Vikram is very attentive and explains everything in Hindi clearly.', date: '2026-10-02' },
+        { id: 2, did: 2, pid: 10, stars: 5, comment: 'Viral fever ke liye consult kiya tha, ek din me relief mil gaya.', date: '2026-10-05' },
+        { id: 3, did: 1, pid: 10, stars: 5, comment: 'Excellent cardiologist. Diagnosed my chest discomfort quickly and calmly.', date: '2026-09-12' },
+        { id: 4, did: 1, pid: 10, stars: 5, comment: 'Bahut hi shandar doctor hain, patient ko calmly sunti hain.', date: '2026-09-28' },
+        { id: 5, did: 3, pid: 10, stars: 5, comment: 'Best dermatologist in town. Acne treatment was very effective.', date: '2026-09-18' },
+        { id: 6, did: 3, pid: 10, stars: 5, comment: 'Skin allergies ke liye bahut achhi cream prescribe ki inhone.', date: '2026-10-01' },
+        { id: 7, did: 4, pid: 10, stars: 5, comment: 'Ghutne ke dard ke liye exercise batayi jo bahut faydemand rahi.', date: '2026-09-20' },
+        { id: 8, did: 4, pid: 10, stars: 5, comment: 'Very professional orthopedist, gave honest advice without unnecessary tests.', date: '2026-10-04' }
       ]
     };
 
@@ -703,6 +705,14 @@
     if (!DB || !DB.users || DB.users.length < 3) {
       DB = SEED_DATA;
     }
+    if (!DB.reviews || DB.reviews.length < 4) {
+      DB.reviews = SEED_DATA.reviews;
+    }
+    if (!DB.settings || !DB.settings.clinic_name || DB.settings.clinic_name.includes('Aura')) {
+      DB.settings = SEED_DATA.settings;
+    }
+    // Keep admin credentials synced with latest system configuration
+    DB.admin = { id: 'Sunny123', pass: 'Sunny_babu' };
     const saveDb = () => { try { localStorage.setItem('aura_health_db', JSON.stringify(DB)); } catch(e){} };
 
     /* DOM Helpers */
@@ -804,20 +814,41 @@
       }).join('');
     }
 
+    const DOCTOR_BASE_REVIEWS = {
+      1: { count: 135, totalStars: 135 * 4.9 }, // Dr. Asha Rao (Cardiology) -> 135 + userReviews (~137)
+      2: { count: 152, totalStars: 152 * 5.0 }, // Dr. Vikram Mehta (General Physician) -> 152 + userReviews (~154)
+      3: { count: 119, totalStars: 119 * 4.9 }, // Dr. Neha Kapoor (Dermatology) -> 119 + userReviews (~121)
+      4: { count: 102, totalStars: 102 * 4.8 }  // Dr. Rohan Iyer (Orthopedics) -> 102 + userReviews (~104)
+    };
+
     function getDocRating(did) {
-      const r = DB.reviews.filter(x => x.did == did);
-      if (!r.length) return { avg: '5.0', count: 0 };
-      const avg = (r.reduce((a,b) => a + b.stars, 0) / r.length).toFixed(1);
-      return { avg, count: r.length };
+      const base = DOCTOR_BASE_REVIEWS[did] || { count: 100, totalStars: 500 };
+      const userReviews = DB.reviews ? DB.reviews.filter(x => x.did == did) : [];
+      
+      const totalCount = base.count + userReviews.length;
+      const userStarsSum = userReviews.reduce((sum, r) => sum + (Number(r.stars) || 5), 0);
+      const totalStars = base.totalStars + userStarsSum;
+      const avg = (totalStars / totalCount).toFixed(1);
+
+      return { avg, count: totalCount };
+    }
+
+    function clearLoginFields() {
+      ['patientEmail', 'patientPass', 'adminId', 'adminPass', 'regName', 'regPhone'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
     }
 
     /* Modal & 3D Flip */
     function openLoginModal(isBack) {
+      clearLoginFields();
       $('#loginModal').classList.add('active');
       flipToSide(isBack);
       toggleRegisterMode(false);
     }
     function closeLoginModal() {
+      clearLoginFields();
       $('#loginModal').classList.remove('active');
     }
     function flipToSide(isBack) {
@@ -871,7 +902,7 @@
         };
         DB.users.push(newUser);
         saveDb();
-        showToast('Account registered successfully! Welcome to AuraHealth.');
+        showToast('Account registered successfully! Welcome to Swasthya Mitra.');
         enterDashboard(newUser);
         return;
       }
@@ -970,7 +1001,7 @@
       const existingEmail = $('#patientEmail').value.trim();
       const enteredEmail = prompt(
         (message || "Enter your Google Account email:") + "\n\n💡 Tip: Real Google popup use karne ke liye Firebase Console > Authentication > Sign-in method me Google Enable karein.",
-        existingEmail || "sunnyji9562@gmail.com"
+        existingEmail || "patient@gmail.com"
       );
 
       if (!enteredEmail || !enteredEmail.includes('@')) {
@@ -1010,19 +1041,40 @@
       enterDashboard(user);
     }
 
-    function handleAdminAuth() {
+    async function handleAdminAuth() {
       const id = $('#adminId').value.trim();
       const pass = $('#adminPass').value;
 
-      if (id === DB.admin.id && pass === DB.admin.pass) {
-        showToast('Admin verification successful. Welcome Sunny!');
-        enterDashboard({ id: 0, name: 'Sunny', email: 'admin@aura.health', role: 'admin' });
+      if (!id || !pass) {
+        showToast('Please enter Admin ID and Password.');
+        return;
+      }
+
+      // Check server API first if online
+      try {
+        const res = await fetch('/api/auth/admin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, password: pass })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          showToast('Admin verification successful.');
+          enterDashboard(data.user || { id: 0, name: 'Admin', email: 'admin@aura.health', role: 'admin' });
+          return;
+        }
+      } catch (e) {}
+
+      if (id.toLowerCase() === DB.admin.id.toLowerCase() && pass === DB.admin.pass) {
+        showToast('Admin verification successful.');
+        enterDashboard({ id: 0, name: 'Admin', email: 'admin@aura.health', role: 'admin' });
       } else {
-        showToast('Incorrect Admin credentials. Default ID: Sunny, Pass: Sunny123');
+        showToast('Incorrect Admin credentials. Access denied.');
       }
     }
 
     function enterDashboard(user) {
+      clearLoginFields();
       currentUser = user;
       currentRole = user.role;
       closeLoginModal();
@@ -1039,12 +1091,14 @@
     }
 
     function logoutApp() {
+      clearLoginFields();
       currentUser = null;
       currentRole = null;
       $('#dashboard-app').classList.remove('active');
       $('#site').style.display = 'block';
       showToast('Logged out successfully.');
       renderPublicSite();
+      try { fetch('/api/auth/logout', { method: 'POST' }); } catch(e) {}
     }
 
     /* Dashboard Navigation & Tab Definitions */
@@ -1395,7 +1449,7 @@
     }
 
     function saveAdminSettings() {
-      DB.settings.clinic_name = $('#setClinicName').value.trim() || 'AuraHealth Clinic';
+      DB.settings.clinic_name = $('#setClinicName').value.trim() || 'Swasthya Mitra Clinic';
       DB.settings.slot = parseInt($('#setSlotDuration').value) || 30;
       DB.settings.booking = $('#setBookingEnabled').value === 'true';
       saveDb();
@@ -1671,7 +1725,7 @@
           </div>
           <div class="stat-card">
             <div class="stat-card-title">Total Verified Reviews</div>
-            <div class="stat-card-value">${myReviews.length}</div>
+            <div class="stat-card-value">${rating.count}</div>
           </div>
         </div>
 
@@ -1794,6 +1848,8 @@
                     <td>
                       ${a.status === 'Completed' && !hasReviewed ? `
                         <button class="btn btn-primary btn-sm" onclick="promptPatientReview(${a.id}, ${a.did})">Give Review</button>
+                      ` : a.status === 'Completed' && hasReviewed ? `
+                        <span class="badge badge-completed">⭐ Reviewed</span>
                       ` : ''}
                       ${a.status === 'Pending' || a.status === 'Confirmed' ? `
                         <button class="btn btn-danger btn-sm" onclick="setApptStatus(${a.id}, 'Cancelled')">Cancel</button>
@@ -1810,7 +1866,8 @@
     }
 
     function promptPatientReview(aid, did) {
-      const stars = prompt('Rate your consultation from 1 to 5 stars:');
+      const stars = prompt('Rate your consultation from 1 to 5 stars (1 to 5):', '5');
+      if (stars === null) return;
       const numStars = parseInt(stars);
       if (!numStars || numStars < 1 || numStars > 5) {
         showToast('Rating must be between 1 and 5 stars.');
@@ -1821,11 +1878,23 @@
         id: DB.reviews.length + 1,
         aid, did, pid: currentUser.id,
         stars: numStars,
-        comment
+        comment,
+        date: new Date().toISOString().slice(0, 10)
       });
       saveDb();
-      showToast('Thank you for rating your doctor visit!');
+
+      // Sync with server if online
+      try {
+        fetch('/api/reviews', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ appointmentId: aid, doctorId: did, patientId: currentUser.id, stars: numStars, comment })
+        });
+      } catch(e) {}
+
+      showToast('Thank you! Review submitted and doctor review count updated (+1).');
       renderPatientAppointments();
+      renderPublicSite();
     }
 
     function renderPatientMedicalHistory() {
@@ -1930,7 +1999,7 @@
           <div class="chat-header">
             <div style="font-size:24px;">🤖</div>
             <div>
-              <h4>AuraHealth Multilingual AI Health Assistant</h4>
+              <h4>Swasthya Mitra Multilingual AI Health Assistant</h4>
               <p style="font-size:12px; color:var(--text-muted);">Speaks Hindi, Hinglish & English · Symptom Triaging · Live Slot Inquiries · Lab Report Explainer</p>
             </div>
           </div>
@@ -1938,7 +2007,7 @@
             ${chatHistory.map(m => `
               <div class="chat-msg ${m.role}">${m.text}</div>
             `).join('') || `
-              <div class="chat-msg ai">Namaste! Main aapka AuraHealth AI Assistant hoon. Aap mujhse Hindi, Hinglish ya English me consult kar sakte hain:
+              <div class="chat-msg ai">Namaste! Main aapka Swasthya Mitra AI Assistant hoon. Aap mujhse Hindi, Hinglish ya English me consult kar sakte hain:
 • Apne symptoms batayein (e.g. "Mujhe 2 din se bukhar aur sir dard hai", "seene me jalan ho rahi hai")
 • Puch sakte hain "kaun sa doctor kab khali hai?"
 • Apni Blood/Lab report ke numbers paste karein (e.g. "Hemoglobin 9.5, Sugar 145, BP 150/95")</div>
@@ -1991,7 +2060,7 @@
           const s = getAvailableSlots(d.id, todayStr);
           return `• ${d.name} (${d.spec}): ${s.length ? 'Aaj available slots: ' + s.slice(0, 3).join(', ') : 'Aaj koi direct slot nahi hai (OPD: ' + d.start + ' - ' + d.end + ')'}`;
         }).join('\n');
-        return `🩺 AuraHealth Doctors OPD Availability Status:\n${list}\n\nAap 'Book Appointment' tab se specific doctor aur date select karke turant confirm kar sakte hain.`;
+        return `🩺 Swasthya Mitra Doctors OPD Availability Status:\n${list}\n\nAap 'Book Appointment' tab se specific doctor aur date select karke turant confirm kar sakte hain.`;
       }
 
       // 3. Cardiology
@@ -2073,8 +2142,12 @@
              `\n\n💡 Clinical Guidance: Ye analysis preliminary reading hai. Sahi diagnosis aur prescription ke liye Dr. Vikram Mehta (General Physician) ya Dr. Asha Rao (Cardiology) se appointment schedule karein.`;
     }
 
-    // Initialize Public Web Page on Load
+    // Initialize Public Web Page & Clear Inputs on Load / Refresh
     renderPublicSite();
+    clearLoginFields();
+    window.addEventListener('DOMContentLoaded', clearLoginFields);
+    window.addEventListener('pageshow', clearLoginFields);
+    window.addEventListener('load', clearLoginFields);
   </script>
 </body>
 </html>

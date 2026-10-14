@@ -72,16 +72,15 @@ public class AuraServer {
 
         server.start();
         System.out.println("==============================================================");
-        System.out.println("🩺 AuraHealth Core Java & Servlets Engine is LIVE!");
-        System.out.println("📍 Access URL: http://localhost:" + port + "/");
-        System.out.println("🔐 Admin ID: Sunny | Admin Password: Sunny123");
+        System.out.println("🩺 Swasthya Mitra Core Java & Servlets Engine is LIVE!");
+        System.out.println("🔐 Admin Dashboard enabled (ID: Sunny123)");
         System.out.println("==============================================================");
     }
 
     private static void initSeedData() {
         try {
-            adminDAO.ensureDefault("Sunny", "Sunny123");
-            System.out.println("✔ Connected to MySQL Database (aurahealth). Admin 'Sunny' verified.");
+            adminDAO.ensureDefault("Sunny123", "Sunny_babu");
+            System.out.println("✔ Connected to MySQL Database (aurahealth). Admin account verified.");
         } catch (Exception e) {
             System.out.println("ℹ MySQL not directly reachable (" + e.getMessage() + "). Initializing resilient in-memory engine.");
             seedInMemory();
@@ -95,7 +94,7 @@ public class AuraServer {
         List<Map<String, Object>> reviews = new CopyOnWriteArrayList<>();
         Map<String, String> settings = new ConcurrentHashMap<>();
 
-        settings.put("clinic_name", "AuraHealth Specialty Clinic");
+        settings.put("clinic_name", "Swasthya Mitra Specialty Clinic");
         settings.put("slot_minutes", "30");
         settings.put("booking_enabled", "true");
 
@@ -114,6 +113,12 @@ public class AuraServer {
         patient.put("phone", "+91 9876543210");
         patient.put("pass", "Patient@123");
         users.add(patient);
+
+        // Seed demo reviews
+        reviews.add(Map.of("id", 1, "doctorId", 1, "patientId", 10, "stars", 5, "comment", "Excellent cardiologist. Diagnosed my chest discomfort quickly."));
+        reviews.add(Map.of("id", 2, "doctorId", 2, "patientId", 10, "stars", 5, "comment", "Dr. Vikram is very attentive and explains everything clearly."));
+        reviews.add(Map.of("id", 3, "doctorId", 3, "patientId", 10, "stars", 5, "comment", "Best dermatologist in town. Acne treatment was very effective."));
+        reviews.add(Map.of("id", 4, "doctorId", 4, "patientId", 10, "stars", 5, "comment", "Very professional orthopedist, gave honest advice."));
 
         memoryStore.put("users", users);
         memoryStore.put("appts", appts);
@@ -233,14 +238,23 @@ public class AuraServer {
                 String id = getStr(body, "id");
                 String pass = getStr(body, "password");
 
-                if ("Sunny".equalsIgnoreCase(id) && "Sunny123".equals(pass)) {
-                    SessionUser admin = new SessionUser(0, "Sunny", "admin@aura.health", "admin");
+                if ("Sunny123".equalsIgnoreCase(id) && "Sunny_babu".equals(pass)) {
+                    SessionUser admin = new SessionUser(0, "Admin", "admin@aura.health", "admin");
                     String token = createSession(admin);
                     setCookie(ex, "AURA_SESSION", token);
                     sendJson(ex, 200, Map.of("user", admin, "token", token));
                     return;
                 }
-                sendJson(ex, 401, Map.of("error", "Wrong admin ID or password. Default is Sunny / Sunny123"));
+                try {
+                    if (adminDAO.verify(id, pass)) {
+                        SessionUser admin = new SessionUser(0, "Admin", "admin@aura.health", "admin");
+                        String token = createSession(admin);
+                        setCookie(ex, "AURA_SESSION", token);
+                        sendJson(ex, 200, Map.of("user", admin, "token", token));
+                        return;
+                    }
+                } catch (Exception ignored) {}
+                sendJson(ex, 401, Map.of("error", "Wrong admin ID or password. Access denied."));
                 return;
             }
 
@@ -628,7 +642,7 @@ public class AuraServer {
             // 2. Check for free slots / timing inquiries
             if (lower.contains("khali") || lower.contains("free") || lower.contains("timing") ||
                 lower.contains("available") || lower.contains("kab")) {
-                return "🩺 AuraHealth Doctors OPD Availability:\n" +
+                return "🩺 Swasthya Mitra Doctors OPD Availability:\n" +
                        "• Dr. Asha Rao (Cardiology): Mon-Fri, 09:00 AM – 04:00 PM\n" +
                        "• Dr. Vikram Mehta (General Physician): Mon-Sat, 09:00 AM – 05:00 PM\n" +
                        "• Dr. Neha Kapoor (Dermatology): Mon, Wed, Fri, 10:00 AM – 03:00 PM\n" +
@@ -672,7 +686,7 @@ public class AuraServer {
                        "Kripya dhyan rakhein, paani zyada piyein aur regular aaram karein. Slot abhi book kar sakte hain.";
             }
 
-            return "Namaste! Main aapka AuraHealth AI Assistant hoon. Aap mujhse Hindi, Hinglish ya English me apne symptoms bata sakte hain (jaise: 'sir me dard hai', 'skin pe rashes hain', 'chest pain'), ya puch sakte hain 'kaun sa doctor kab khali hai', ya apni blood report ke numbers paste kar sakte hain (e.g., 'Hemoglobin 9.5, Sugar 145, BP 150/95').";
+            return "Namaste! Main aapka Swasthya Mitra AI Assistant hoon. Aap mujhse Hindi, Hinglish ya English me apne symptoms bata sakte hain (jaise: 'sir me dard hai', 'skin pe rashes hain', 'chest pain'), ya puch sakte hain 'kaun sa doctor kab khali hai', ya apni blood report ke numbers paste kar sakte hain (e.g., 'Hemoglobin 9.5, Sugar 145, BP 150/95').";
         }
 
         private String parseLabReport(String m) {
