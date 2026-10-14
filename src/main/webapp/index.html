@@ -25,20 +25,25 @@
       measurementId: "G-BMCSMR52RR"
     };
 
-    try {
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
-      const googleProvider = new GoogleAuthProvider();
-      try { getAnalytics(app); } catch (e) {}
+    window.firebaseInitPromise = (async () => {
+      try {
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
+        googleProvider.setCustomParameters({ prompt: 'select_account' });
+        try { getAnalytics(app); } catch (e) {}
 
-      window.firebaseApp = app;
-      window.firebaseAuth = auth;
-      window.firebaseGoogleProvider = googleProvider;
-      window.firebaseSignInWithPopup = signInWithPopup;
-      console.log("🔥 Firebase initialized successfully with projectId:", firebaseConfig.projectId);
-    } catch (err) {
-      console.warn("⚠️ Firebase initialization warning:", err);
-    }
+        window.firebaseApp = app;
+        window.firebaseAuth = auth;
+        window.firebaseGoogleProvider = googleProvider;
+        window.firebaseSignInWithPopup = signInWithPopup;
+        console.log("🔥 Firebase initialized successfully with projectId:", firebaseConfig.projectId);
+        return { app, auth, googleProvider, signInWithPopup };
+      } catch (err) {
+        console.warn("⚠️ Firebase initialization warning:", err);
+        throw err;
+      }
+    })();
   </script>
 
   <style>
@@ -882,68 +887,82 @@
     }
 
     async function handleGoogleFirebase() {
-      if (window.firebaseAuth && window.firebaseGoogleProvider && window.firebaseSignInWithPopup) {
-        try {
-          showToast('Connecting with Google...');
-          const result = await window.firebaseSignInWithPopup(window.firebaseAuth, window.firebaseGoogleProvider);
-          const fbUser = result.user;
-          const email = (fbUser.email || '').toLowerCase();
-          const name = fbUser.displayName || email.split('@')[0] || 'Patient';
+      const googleBtn = document.querySelector('.btn-google');
+      if (googleBtn) googleBtn.disabled = true;
 
-          // Sync with Server Session
-          try {
-            await fetch('/api/auth/google', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email, name })
-            });
-          } catch (syncErr) {
-            console.log('Session sync note:', syncErr);
-          }
+      try {
+        showToast('Google account connect ho raha hai...');
 
-          let user = DB.users.find(u => u.email.toLowerCase() === email);
-          if (!user) {
-            user = {
-              id: DB.users.length + 10,
-              name,
-              email,
-              pass: 'GoogleOAuth2',
-              phone: fbUser.phoneNumber || '+91 9876543210',
-              role: 'patient',
-              photo: fbUser.photoURL
-            };
-            DB.users.push(user);
-            saveDb();
-          }
-          showToast(`Welcome ${name}! Signed in successfully.`);
-          closeLoginModal();
-          enterDashboard(user);
-          return;
-        } catch (err) {
-          console.warn('Google Sign-In notice:', err);
-          if (err.code === 'auth/popup-closed-by-user') {
-            showToast('Google sign-in was cancelled.');
-            return;
-          }
-          showToast('Sign-in note: ' + (err.message || 'Connecting...'));
+        if (window.firebaseInitPromise) {
+          await window.firebaseInitPromise;
         }
-      }
 
-      // Fallback
-      const email = ($('#patientEmail').value.trim() || 'patient@aura.health').toLowerCase();
-      let user = DB.users.find(u => u.email.toLowerCase() === email);
-      if (!user) {
-        user = {
-          id: DB.users.length + 10,
-          name: email.split('@')[0],
-          email, pass: 'Google@123', phone: '+91 9999999999', role: 'patient'
-        };
-        DB.users.push(user);
-        saveDb();
+        if (!window.firebaseAuth || !window.firebaseGoogleProvider || !window.firebaseSignInWithPopup) {
+          showToast('Authentication load ho raha hai, kripya 2 second baad dobara koshish karein.');
+          return;
+        }
+
+        // Real Google Account sign-in popup
+        const result = await window.firebaseSignInWithPopup(window.firebaseAuth, window.firebaseGoogleProvider);
+        const fbUser = result.user;
+        const email = (fbUser.email || '').toLowerCase();
+        const name = fbUser.displayName || email.split('@')[0] || 'Patient';
+
+        if (!email) {
+          showToast('Google account se email verify nahi hua.');
+          return;
+        }
+
+        // Sync with Server Session
+        try {
+          await fetch('/api/auth/google', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, name })
+          });
+        } catch (syncErr) {
+          console.log('Session sync note:', syncErr);
+        }
+
+        // Store / update patient user record with real Google credentials
+        let user = DB.users.find(u => u.email.toLowerCase() === email);
+        if (!user) {
+          user = {
+            id: DB.users.length + 10,
+            name: name,
+            email: email,
+            pass: 'GoogleOAuth2',
+            phone: fbUser.phoneNumber || '',
+            role: 'patient',
+            photo: fbUser.photoURL || ''
+          };
+          DB.users.push(user);
+          saveDb();
+        } else {
+          user.name = name;
+          if (fbUser.photoURL) user.photo = fbUser.photoURL;
+          saveDb();
+        }
+
+        showToast(`Welcome ${name}! Google account se sign-in ho gaya.`);
+        closeLoginModal();
+        enterDashboard(user);
+      } catch (err) {
+        console.error('Google Sign-In Error:', err);
+        if (err.code === 'auth/popup-closed-by-user') {
+          showToast('Google sign-in popup band kar diya gaya.');
+        } else if (err.code === 'auth/cancelled-popup-request') {
+          showToast('Doosra sign-in popup already active hai.');
+        } else if (err.code === 'auth/unauthorized-domain') {
+          showToast('Domain unauthorized hai. Firebase Console me localhost add karein.');
+        } else if (err.code === 'auth/operation-not-allowed') {
+          showToast('Firebase Console me Google Sign-In provider enable karein.');
+        } else {
+          showToast('Google sign-in nahi ho paya: ' + (err.message || 'Error'));
+        }
+      } finally {
+        if (googleBtn) googleBtn.disabled = false;
       }
-      showToast('Signed in successfully!');
-      closeLoginModal();
-      enterDashboard(user);
     }
 
     function handleAdminAuth() {
