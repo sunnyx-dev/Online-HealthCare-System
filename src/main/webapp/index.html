@@ -9,6 +9,38 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   
+  <!-- Firebase App, Analytics & Auth SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDwv5cvADP1vfiKFML4--8QoBxiOZvijKg",
+      authDomain: "aurahealth-e16a4.firebaseapp.com",
+      projectId: "aurahealth-e16a4",
+      storageBucket: "aurahealth-e16a4.firebasestorage.app",
+      messagingSenderId: "90273695052",
+      appId: "1:90273695052:web:fb3b5e40c6ec2e36683be9",
+      measurementId: "G-BMCSMR52RR"
+    };
+
+    try {
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const googleProvider = new GoogleAuthProvider();
+      try { getAnalytics(app); } catch (e) {}
+
+      window.firebaseApp = app;
+      window.firebaseAuth = auth;
+      window.firebaseGoogleProvider = googleProvider;
+      window.firebaseSignInWithPopup = signInWithPopup;
+      console.log("🔥 Firebase initialized successfully with projectId:", firebaseConfig.projectId);
+    } catch (err) {
+      console.warn("⚠️ Firebase initialization warning:", err);
+    }
+  </script>
+
   <style>
     :root {
       --bg: #f8fafc;
@@ -849,7 +881,55 @@
       }
     }
 
-    function handleGoogleFirebase() {
+    async function handleGoogleFirebase() {
+      if (window.firebaseAuth && window.firebaseGoogleProvider && window.firebaseSignInWithPopup) {
+        try {
+          showToast('Connecting to Google Firebase...');
+          const result = await window.firebaseSignInWithPopup(window.firebaseAuth, window.firebaseGoogleProvider);
+          const fbUser = result.user;
+          const email = (fbUser.email || '').toLowerCase();
+          const name = fbUser.displayName || email.split('@')[0] || 'Google Patient';
+
+          // Sync with Core Java / Servlets Backend Session
+          try {
+            await fetch('/api/auth/google', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, name })
+            });
+          } catch (syncErr) {
+            console.log('Backend sync note:', syncErr);
+          }
+
+          let user = DB.users.find(u => u.email.toLowerCase() === email);
+          if (!user) {
+            user = {
+              id: DB.users.length + 10,
+              name,
+              email,
+              pass: 'GoogleOAuth2',
+              phone: fbUser.phoneNumber || '+91 9876543210',
+              role: 'patient',
+              photo: fbUser.photoURL
+            };
+            DB.users.push(user);
+            saveDb();
+          }
+          showToast(`Welcome ${name}! Signed in via Google Firebase.`);
+          closeLoginModal();
+          enterDashboard(user);
+          return;
+        } catch (err) {
+          console.warn('Firebase Google Sign-In notice:', err);
+          if (err.code === 'auth/popup-closed-by-user') {
+            showToast('Google sign-in popup was closed.');
+            return;
+          }
+          showToast('Firebase notice: ' + (err.message || 'Connecting fallback...'));
+        }
+      }
+
+      // Offline / Local Fallback
       const email = ($('#patientEmail').value.trim() || 'google.patient@aura.health').toLowerCase();
       let user = DB.users.find(u => u.email.toLowerCase() === email);
       if (!user) {
@@ -861,7 +941,8 @@
         DB.users.push(user);
         saveDb();
       }
-      showToast('Signed in successfully via Google Firebase!');
+      showToast('Signed in successfully via Google Firebase fallback!');
+      closeLoginModal();
       enterDashboard(user);
     }
 
