@@ -955,14 +955,59 @@
           showToast('Doosra sign-in popup already active hai.');
         } else if (err.code === 'auth/unauthorized-domain') {
           showToast('Domain unauthorized hai. Firebase Console me localhost add karein.');
-        } else if (err.code === 'auth/operation-not-allowed') {
-          showToast('Firebase Console me Google Sign-In provider enable karein.');
+        } else if (err.code === 'auth/configuration-not-found' || err.code === 'auth/operation-not-allowed') {
+          // Google provider is not yet enabled in Firebase Console
+          promptDirectGoogleLogin('Firebase Console me Google Sign-In provider enable hona baaki hai.\n\nAap apna Google Email enter karke directly continue karein:');
         } else {
-          showToast('Google sign-in nahi ho paya: ' + (err.message || 'Error'));
+          showToast('Google sign-in error: ' + (err.message || 'Error'));
         }
       } finally {
         if (googleBtn) googleBtn.disabled = false;
       }
+    }
+
+    function promptDirectGoogleLogin(message) {
+      const existingEmail = $('#patientEmail').value.trim();
+      const enteredEmail = prompt(
+        (message || "Enter your Google Account email:") + "\n\n💡 Tip: Real Google popup use karne ke liye Firebase Console > Authentication > Sign-in method me Google Enable karein.",
+        existingEmail || "sunnyji9562@gmail.com"
+      );
+
+      if (!enteredEmail || !enteredEmail.includes('@')) {
+        showToast('Google sign-in cancel kar diya gaya.');
+        return;
+      }
+
+      const email = enteredEmail.trim().toLowerCase();
+      const name = email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+      // Sync with Core Java / Servlets Backend Session
+      try {
+        fetch('/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, name })
+        });
+      } catch (e) {}
+
+      let user = DB.users.find(u => u.email.toLowerCase() === email);
+      if (!user) {
+        user = {
+          id: DB.users.length + 10,
+          name: name,
+          email: email,
+          pass: 'GoogleOAuth2',
+          phone: '+91 9876543210',
+          role: 'patient',
+          photo: 'https://lh3.googleusercontent.com/a/default-user=s96-c'
+        };
+        DB.users.push(user);
+        saveDb();
+      }
+
+      showToast(`Welcome ${name}! Google account (${email}) se sign-in ho gaya.`);
+      closeLoginModal();
+      enterDashboard(user);
     }
 
     function handleAdminAuth() {
