@@ -9,25 +9,58 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
-/** GET /api/settings (public) | PUT /api/settings (admin) {clinic_name, slot_minutes, booking_enabled} */
+/**
+ * Controller Servlet for Global Clinic Settings & Operational Toggles.
+ * <p>
+ * Supported Operations:
+ * <ul>
+ *   <li><b>GET /api/settings:</b> Public read-only access to clinic name, slot duration, and booking availability.</li>
+ *   <li><b>PUT /api/settings:</b> Administrator endpoint to modify branding, slot partition duration, and booking state.</li>
+ * </ul>
+ * </p>
+ */
 @WebServlet("/api/settings")
 public class SettingsServlet extends ApiServlet {
-    private final SettingsDAO settings = new SettingsDAO();
 
-    @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private static final Set<String> VALID_SLOT_MINUTES = Set.of("15", "20", "30", "45", "60");
+    private final SettingsDAO settings;
+
+    /**
+     * Constructs SettingsServlet with SettingsDAO dependency.
+     */
+    public SettingsServlet() {
+        this.settings = new SettingsDAO();
+    }
+
+    /**
+     * Handles GET requests: returns all global system settings.
+     */
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         send(resp, 200, settings.all());
     }
 
-    @Override protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    /**
+     * Handles PUT requests: updates clinic configuration parameters (Admin restricted).
+     */
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         require(req, "admin");
         JsonObject b = body(req);
-        String name = str(b, "clinic_name"), slot = str(b, "slot_minutes"), booking = str(b, "booking_enabled");
-        if (name.isEmpty() || !Set.of("15", "20", "30", "45", "60").contains(slot) ||
-            !(booking.equals("true") || booking.equals("false")))
-            throw new ApiException(400, "Clinic name, slot length (15/20/30/45/60) and booking true/false are required.");
+
+        String name = str(b, "clinic_name");
+        String slot = str(b, "slot_minutes");
+        String booking = str(b, "booking_enabled");
+
+        if (name.isEmpty() || !VALID_SLOT_MINUTES.contains(slot) || !("true".equalsIgnoreCase(booking) || "false".equalsIgnoreCase(booking))) {
+            throw new ApiException(400, "Valid clinic name, slot length (15, 20, 30, 45, 60 minutes), and booking toggle (true/false) are required.");
+        }
+
         settings.put("clinic_name", name);
         settings.put("slot_minutes", slot);
-        settings.put("booking_enabled", booking);
-        send(resp, 200, Map.of("message", "Settings updated successfully."));
+        settings.put("booking_enabled", booking.toLowerCase());
+
+        send(resp, 200, Map.of("message", "Clinic settings updated successfully."));
     }
 }
+

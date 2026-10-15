@@ -10,21 +10,62 @@ import java.io.IOException;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
 
-/** GET /api/slots?doctorId=3&date=2026-10-20 -> free slots; GET /api/slots?doctorId=3 -> next free days */
+/**
+ * Controller Servlet for Real-Time Doctor Slot Availability & Schedule Previews.
+ * <p>
+ * Supported Operations:
+ * <ul>
+ *   <li><b>GET /api/slots?doctorId={id}&amp;date={YYYY-MM-DD}:</b> Returns unbooked time slots for a specific date.</li>
+ *   <li><b>GET /api/slots?doctorId={id}:</b> Returns upcoming preview of open dates and times across the next 5 working days.</li>
+ * </ul>
+ * </p>
+ */
 @WebServlet("/api/slots")
 public class SlotsServlet extends ApiServlet {
-    private final UserDAO users = new UserDAO();
-    private final SlotService slots = new SlotService();
 
-    @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private final UserDAO users;
+    private final SlotService slots;
+
+    /**
+     * Constructs SlotsServlet with required DAO and Service dependencies.
+     */
+    public SlotsServlet() {
+        this.users = new UserDAO();
+        this.slots = new SlotService();
+    }
+
+    /**
+     * Handles GET requests: queries real-time open consultation slots.
+     */
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         require(req);
-        int id;
-        try { id = Integer.parseInt(req.getParameter("doctorId")); }
-        catch (NumberFormatException e) { throw new ApiException(400, "doctorId is required."); }
-        Doctor d = users.findDoctor(id).orElseThrow(() -> new ApiException(404, "Doctor not found."));
+
+        int doctorId;
+        try {
+            String param = req.getParameter("doctorId");
+            if (param == null || param.isBlank()) {
+                throw new ApiException(400, "Query parameter 'doctorId' is required.");
+            }
+            doctorId = Integer.parseInt(param);
+        } catch (NumberFormatException e) {
+            throw new ApiException(400, "Query parameter 'doctorId' must be a valid integer.");
+        }
+
+        Doctor d = users.findDoctor(doctorId)
+            .orElseThrow(() -> new ApiException(404, "Doctor not found."));
+
         String date = req.getParameter("date");
-        if (date == null) { send(resp, 200, slots.nextFree(d, 5)); return; }
-        try { send(resp, 200, Map.of("date", date, "slots", slots.freeSlots(d, date))); }
-        catch (DateTimeParseException e) { throw new ApiException(400, "date must be yyyy-MM-dd."); }
+        if (date == null || date.isBlank()) {
+            send(resp, 200, slots.nextFree(d, 5));
+            return;
+        }
+
+        try {
+            send(resp, 200, Map.of("date", date, "slots", slots.freeSlots(d, date)));
+        } catch (DateTimeParseException e) {
+            throw new ApiException(400, "Invalid date format. Expected 'yyyy-MM-dd'.");
+        }
     }
 }
+
