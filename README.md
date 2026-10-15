@@ -1,4 +1,4 @@
-# AuraHealth (Java Servlets + JDBC + MySQL)
+# SwasthyaHealth (Java Servlets + JDBC + MySQL)
 
 REST backend for the AuraHealth web app: patients, doctors and an admin, with appointment booking, medical history, reviews, settings, analytics and an AI helper.
 
