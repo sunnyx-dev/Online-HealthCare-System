@@ -1,4 +1,4 @@
-# 🩺 AuraHealth / Swasthya Mitra
+# 🩺Swasthya Mitra
 ### Enterprise Healthcare Management & Outpatient Scheduling System
 **Engineered with Core Java (JDK 17+), Servlets & Standalone Embedded Server, JDBC, and Normalized MySQL 8**
 
@@ -7,18 +7,6 @@
 [![Jakarta Servlet](https://img.shields.io/badge/Jakarta%20Servlet-6.0-green.svg)](https://jakarta.ee/specifications/servlet/6.0/)
 [![Database](https://img.shields.io/badge/MySQL-8.0%2B-blue.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-MIT-lightgrey.svg)](LICENSE)
-
----
-
-## 📌 Repository Accessibility for Reviewers
-
-> [!IMPORTANT]
-> **GitHub Repository Visibility: PUBLIC**
-> 
-> This repository is public and immediately accessible to all reviewers without authentication:
-> - **Public URL:** [https://github.com/sunnyx-dev/Online-HealthCare-System](https://github.com/sunnyx-dev/Online-HealthCare-System)
-> - **HTTPS Clone URL:** `git clone https://github.com/sunnyx-dev/Online-HealthCare-System.git`
-> - **SSH Clone URL:** `git clone git@github.com:sunnyx-dev/Online-HealthCare-System.git`
 
 ---
 
@@ -327,7 +315,7 @@ The system comes pre-seeded with accounts across all three roles for instant tes
 ### 🛡️ Administrator Account
 - **Portal URL:** Click **Admin Login** on the home page or open `/admin-dashboard/index.html`
 - **Admin ID:** `Sunny123`
-- **Password:** `Sunny_babu`
+- **Password:** `mail me if u want to show Demo`
 - **Capabilities:** Onboard doctors, provision users, manage settings, view clinic KPI analytics.
 
 ### 🩺 Doctor Accounts
@@ -336,9 +324,6 @@ The system comes pre-seeded with accounts across all three roles for instant tes
   | Doctor Name | Specialty | Email | Password |
   |---|---|---|---|
   | **Dr. Asha Rao** | Cardiology | `asha@aura.health` | `Doc@101` |
-  | **Dr. Vikram Mehta** | General Physician | `vikram@aura.health` | `Doc@102` |
-  | **Dr. Neha Kapoor** | Dermatology | `neha@aura.health` | `Doc@103` |
-  | **Dr. Rohan Iyer** | Orthopedics | `rohan@aura.health` | `Doc@104` |
 - **Capabilities:** Configure OPD working hours, confirm/complete appointments, view patient medical records, inspect reviews.
 
 ### 👤 Demo Patient Account
